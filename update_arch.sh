@@ -205,17 +205,19 @@ update_arch_linux_keyring() {
   echo 
   echo "====================================================="
   echo "'chaotic-mirrorlist' adds separate mirrorlist file in"
-  echo " /etc/pacman.d/chaotic-mirrorlist"
+  echo "  /etc/pacman.d/chaotic-mirrorlist"
   echo "-----------------------------------------------------"
   echo
 
   pikaur --sync --refresh --verbose --noconfirm --config "${SCRIPT_DIR}"/config/pacman.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf chaotic-mirrorlist
 
   echo
-  echo "===================================="
+  echo "====================================================="
+  echo "'chaotic-keyring' add GPG keys for 'chaotic-aur' repo"
+  echo "-----------------------------------------------------"
   echo "For chaotic-aur repo setup, see page"
-  echo " https://lonewolf.pedrohlc.com/chaotic-aur/"
-  echo "-------------------------------------------"
+  echo "  https://lonewolf.pedrohlc.com/chaotic-aur/"
+  echo "-----------------------------------------------------"
   echo
 
   pikaur --sync --refresh --verbose --noconfirm --config "${SCRIPT_DIR}"/config/pacman.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf chaotic-keyring 
@@ -244,6 +246,7 @@ install_script_dependencies() {
 }
 
 upgrade_packages() {
+  echo
   echo "==============================="
   echo "Updating and upgrading packages"
   echo "==============================="
@@ -349,6 +352,7 @@ finalize() {
   echo " and the pacman log with"
   echo "  less /var/log/pacman.log"
   echo
+
   echo "TODO show the pacman log"
   echo "only for the last run"
   echo "with 'grep -n' and 'tail'"
@@ -361,13 +365,28 @@ finalize() {
   echo
   echo "=========================================="
   echo
+
+  ln -sf "$(readlink --canonicalize $0)" "$HOME/$(basename $0)"
+  ln -sf "${SCRIPT_DIR}/utils/remount_boot_part_as_writable.sh" "$HOME/remount_boot_part_as_writable.sh"
+
+  echo "A link to the update script and to remounting script"
+  echo "have been made in your home directory at"
+  echo
+  echo "  $(ls $HOME/$(basename $0))"
+  echo
+  echo "and"
+  echo
+  echo "  $(ls $HOME/remount_boot_part_as_writable.sh)"
+  echo
+  echo "for more convenient launching"
+  echo
 }
 
 main() {
   request_sudo_password
   set_up_pacman_configuration 
   set_up_pikaur
-  #update_repo_of_this_script
+  update_repo_of_this_script
   update_pacman_mirror_servers
   update_arch_linux_keyring
   remount_boot_partition_as_writable
