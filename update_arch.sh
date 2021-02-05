@@ -66,7 +66,7 @@ update_repo_of_this_script() {
   echo "========================================"
   echo
 
-  local git_pull_status=$(git -C "$(dirname $(readlink -f ~/update_arch.sh))" pull)
+  local git_pull_status=$(git -C "$SCRIPT_DIR" pull)
 
   echo "$git_pull_status" | grep --invert-match "Already up to date."
 
