@@ -18,6 +18,7 @@ prepare_environment() {
   POWERPILL_CUSTOM_CONFIG="${custom_config_dir}/powerpill.json"
   GPG_CUSTOM_CONFIG="${custom_config_dir}/gpg.conf"
 
+  # TODO extract echo statements with decorations into function to remove duplicate code
   echo "================================================================================"
   echo
   echo "Script directory: $SCRIPT_DIR"
@@ -60,6 +61,7 @@ set_up_pacman_configuration() {
   echo "-------------------------------------------------------"
   echo
 
+  #TODO use the long, keyword options '--' instead of the one-letter ones for better readability for all commands
   sudo ln -sf "$PACMAN_CUSTOM_CONFIG" "$PACMAN_DEFAULT_CONFIG_FILE"
 }
 
@@ -178,6 +180,9 @@ update_arch_linux_keyring() {
   sudo pacman-key --populate archlinux
   sudo gpg --refresh-keys
 
+  #TODO extract repeating GPG commands into a separate function
+  # that will automatically switch between pacman-key and gpg commands
+  # by to an argument
   echo
   echo "================================"
   echo "Add GPG key for seblu repository"
@@ -247,6 +252,7 @@ update_arch_linux_keyring() {
   echo "-----------------------------------------------------------"
   echo
 
+  #TODO extract repeating pikaur, and maybe pacman and powerpill statements into a separate function with variable number of arguments
   pikaur \
     --sync \
     --refresh --refresh \
@@ -388,6 +394,10 @@ upgrade_packages() {
     echo "and"
     echo " https://bbs.archlinux.org/viewtopic.php?pid=1254940#p1254940"
     echo "---------------------------------------------------------------"
+
+    echo
+    echo "TODO replace 'powerpill' with 'pacman'"
+    echo "when 'pacman 6.0' or higher will be officialy released"
 
     sudo powerpill \
         --sync \

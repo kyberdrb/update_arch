@@ -12,9 +12,13 @@ update_pacman_mirror_servers() {
   echo
 
   # The easy way ^_^ that sometimes fails
-  # reflector --fastest 200 --latest 100 --protocol http,https,rsync | sudo tee /etc/pacman.d/mirrorlist
-  # or
-  # reflector --latest 100 --protocol http,https,rsync --verbose --country Slovakia --country Czechia --country Poland --country Hungary --country Ukraine --country Austria --country Germany | sudo tee /etc/pacman.d/mirrorlist
+  # reflector --fastest 200 --sort rate --completion-percent 100 --verbose --country Slovakia,Czechia,Poland,Hungary,Ukraine,Austria,Germany | tee ~/reflector_mirrorlist
+  # local number_of_lines_reflector_mirrorlist
+  # number_of_lines_reflector_mirrorlist=$(wc -l ~/reflector_mirrorlist | cut -d' ' -f1)
+  # local number_of_intro_lines
+  # number_of_intro_lines=10
+  # number_of_mirrors=$((number_of_lines_reflector_mirrorlist - number_of_intro_lines))
+  # tail -n $number_of_mirrors ~/reflector_mirrorlist > ~/reflector_mirrorlist-clean
 
   # The hard way `_´ that always works ºOº &) :D :)
   curl -L "https://www.archlinux.org/mirrors/status/" -o ~/Arch_Linux-Mirrors-Status.html
@@ -51,8 +55,6 @@ update_pacman_mirror_servers() {
   echo
 
   cat ~/Arch_Linux-Mirrors-Status-Successful_Mirrors_Table_Only.html | sed '/<a href/d' | sed 's/^[\ \t]*//g' | grep -i -e "<td\|<tr>" | sed 's/<tr>//Ig'| sed '/^$/d' | sed 's/<\/td>/,/Ig' | sed 's/<td>//Ig' | sed 's/span /\n/Ig' | sed 's/<\/span> /\n/Ig' | sed '/^<td class/d' | sed '/^class/d' | tr --delete '\n' | sed 's/<\/tr>/\n/Ig' | sed 's/,$//g' | grep '100.0%' | grep "Slovakia\|Czechia\|Poland\|Hungary\|Ukraine\|Austria\|\Germany" > ~/mirrorlist.csv
-
-exit
 
   echo "========================================================="
   echo "Extracting only the URLs of the servers from the CSV file"
@@ -110,6 +112,15 @@ exit
   echo "Moving new 'mirrorlist' to the pacman directory to apply changes"
   echo "----------------------------------------------------------------"
   echo
+
+  #TODO if ~/reflector_mirrorlist file is not empty
+  # i.e. if it has more than one line by 'wc -l'
+  # use the reflector's mirrorlist
+
+  #TODO instead of saving the 'mirrorlist' in the home directory '~'
+  # save in the 'config' directory in this repo
+  # and link the '/etc/pacman.d/mirrorlist' file 
+  # to the 'mirrorlist' file in this repo
 
   sudo mv ~/mirrorlist /etc/pacman.d/mirrorlist
 
