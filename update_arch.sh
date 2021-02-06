@@ -1,15 +1,43 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(dirname $(readlink --canonicalize $0))"
-
-request_sudo_password() {
+prepare_environment() {
   sudo echo
 
-  echo "================================================================================"
-  echo "Script location"
-  echo " $SCRIPT_DIR"
+  SCRIPT_DIR="$(dirname "$(readlink --canonicalize "$0")")"
+  PACMAN_DEFAULT_CONFIG_FILE="$(extract_path_from_pacman_workspace 'Conf File')"
+  PACMAN_DB_PATH="$(extract_path_from_pacman_workspace 'DB Path')"
+  PACMAN_GPG_DIR="$(extract_path_from_pacman_workspace 'GPG Dir')"
+  PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
+
+  local custom_config_dir
+  custom_config_dir="${SCRIPT_DIR}/config"
+  PACMAN_CUSTOM_CONFIG="${custom_config_dir}/pacman.conf"
+  PIKAUR_CUSTOM_CONFIG="${custom_config_dir}/pikaur.conf"
+  POWERPILL_CUSTOM_CONFIG="${custom_config_dir}/powerpill.json"
+
+  LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
+
   echo "================================================================================"
   echo
+  echo "Script directory: $SCRIPT_DIR"
+  echo "Pacman default config file: $PACMAN_DEFAULT_CONFIG_FILE"
+  echo "Pacman database path: $PACMAN_DB_PATH"
+  echo "Pacman GPG directory: $PACMAN_GPG_DIR"
+  echo "Pacman log file: $PACMAN_LOG_FILE"
+  echo
+  echo "================================================================================"
+  echo
+}
+
+extract_path_from_pacman_workspace() {
+  local pacman_workspace
+  pacman_workspace="$(pacman --verbose 2>/dev/null)"
+  
+  local searched_text="$1"
+  
+  local extracted_text
+  extracted_text=$(echo -e "$pacman_workspace" | grep "$searched_text" | tr -d ' ' | cut -d':' -f2)
+  echo "$extracted_text"
 }
 
 set_up_pacman_configuration() {
@@ -24,14 +52,14 @@ set_up_pacman_configuration() {
   echo
 
   BACKUP_TIME_AND_DATE=$(date "+%Y_%m_%d-%H_%M_%S")
-  sudo cp --dereference /etc/pacman.conf /etc/pacman.conf-${BACKUP_TIME_AND_DATE}.bak
+  sudo cp --dereference "$PACMAN_DEFAULT_CONFIG_FILE" "${PACMAN_DEFAULT_CONFIG_FILE}-${BACKUP_TIME_AND_DATE}.bak"
 
-  echo "====================================================="
-  echo "Link embedded pacman configuration file to the system"
-  echo "-----------------------------------------------------"
+  echo "======================================================="
+  echo "Link embedded 'pacman' configuration file to the system"
+  echo "-------------------------------------------------------"
   echo
 
-  sudo ln -sf "${SCRIPT_DIR}"/config/pacman.conf /etc/pacman.conf
+  sudo ln -sf "$PACMAN_CUSTOM_CONFIG" "$PACMAN_DEFAULT_CONFIG_FILE"
 }
 
 set_up_pikaur() {
@@ -46,10 +74,17 @@ set_up_pikaur() {
     mkdir /tmp/pikaur-git
     curl https://aur.archlinux.org/cgit/aur.git/snapshot/pikaur-git.tar.gz --output /tmp/pikaur-git.tar.gz
     tar -xvzf /tmp/pikaur-git.tar.gz --directory /tmp/pikaur-git
-    cd /tmp/pikaur-git/pikaur-git
+    cd /tmp/pikaur-git/pikaur-git || exit
     makepkg --ignorearch --clean --syncdeps --noconfirm
     PIKAUR_PACKAGE_NAME=$(ls -- *.tar*)
-    sudo pacman --upgrade --noconfirm --config "${SCRIPT_DIR}"/config/pacman.conf "$PIKAUR_PACKAGE_NAME"
+
+    sudo pacman \
+        --verbose \
+        --upgrade \
+        --noconfirm \
+        --config "$PACMAN_CUSTOM_CONFIG" \
+      "$PIKAUR_PACKAGE_NAME"
+    
     rm -rf /tmp/pikaur-git
   fi
 
@@ -58,6 +93,13 @@ set_up_pikaur() {
   echo 'Arch User Repository (AUR) Package Helper present'
   echo "-------------------------------------------------"
   echo 
+
+  echo "======================================================="
+  echo "Link embedded 'pikaur' configuration file to the system"
+  echo "-------------------------------------------------------"
+  echo
+
+  ln -sf "$PIKAUR_CUSTOM_CONFIG" "${HOME}/.config/pikaur.conf"
 }
 
 update_repo_of_this_script() {
@@ -66,7 +108,8 @@ update_repo_of_this_script() {
   echo "========================================"
   echo
 
-  local git_pull_status=$(git -C "$SCRIPT_DIR" pull)
+  local git_pull_status
+  git_pull_status=$(git -C "$SCRIPT_DIR" pull)
 
   echo "$git_pull_status" | grep --invert-match "Already up to date."
 
@@ -107,7 +150,7 @@ update_arch_linux_keyring() {
   echo "----------------------"
   echo
 
-  sudo rm -R /etc/pacman.d/gnupg/
+  sudo rm -R "$PACMAN_GPG_DIR"
   sudo rm -R /root/.gnupg/
   rm -rf ~/.gnupg/
 
@@ -117,7 +160,10 @@ update_arch_linux_keyring() {
   echo
 
   sudo pacman-key --init
-  echo "keyserver hkp://keyserver.ubuntu.com" | sudo tee --append "/etc/pacman.d/gnupg/gpg.conf"
+
+  #TODO copy the gpg.conf file into the config dir
+  # and symlink this file from system to the repo
+  echo "keyserver hkp://keyserver.ubuntu.com" | sudo tee --append """$PACMAN_GPG_DIR""/gpg.conf"
 
 
   echo
@@ -198,9 +244,21 @@ update_arch_linux_keyring() {
   echo "-----------------------------------------------------------"
   echo
 
-  pikaur --sync --refresh --refresh --verbose --config "${SCRIPT_DIR}"/config/pacman.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf
+  pikaur \
+    --sync \
+    --refresh --refresh \
+    --verbose \
+    --config "$PACMAN_CUSTOM_CONFIG" \
+    --pikaur-config "$PIKAUR_CUSTOM_CONFIG"
 
-  pikaur --sync --refresh --verbose --noconfirm --config "${SCRIPT_DIR}"/config/pacman.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf archlinux-keyring
+  pikaur \
+      --sync \
+      --refresh \
+      --verbose \
+      --noconfirm \
+      --config "$PACMAN_CUSTOM_CONFIG" \
+      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
+    archlinux-keyring
 
   echo 
   echo "====================================================="
@@ -209,7 +267,14 @@ update_arch_linux_keyring() {
   echo "-----------------------------------------------------"
   echo
 
-  pikaur --sync --refresh --verbose --noconfirm --config "${SCRIPT_DIR}"/config/pacman.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf chaotic-mirrorlist
+  pikaur \
+      --sync \
+      --refresh \
+      --verbose \
+      --noconfirm \
+      --config "$PACMAN_CUSTOM_CONFIG" \
+      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
+    chaotic-mirrorlist
 
   echo
   echo "====================================================="
@@ -220,7 +285,14 @@ update_arch_linux_keyring() {
   echo "-----------------------------------------------------"
   echo
 
-  pikaur --sync --refresh --verbose --noconfirm --config "${SCRIPT_DIR}"/config/pacman.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf chaotic-keyring 
+  pikaur \
+      --sync \
+      --refresh \
+      --verbose \
+      --noconfirm \
+      --config "$PACMAN_CUSTOM_CONFIG" \
+      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
+    chaotic-keyring 
 }
 
 remount_boot_partition_as_writable() {
@@ -242,11 +314,34 @@ install_script_dependencies() {
   echo "========================================"
   echo
 
-  pikaur --sync --refresh --needed --noconfirm --config "${SCRIPT_DIR}"/config/pacman.conf --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf pikaur powerpill reflector rsync
+  pikaur \
+      --sync \
+      --refresh \
+      --needed \
+      --noconfirm \
+      --config "$PACMAN_CUSTOM_CONFIG" \
+      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
+    pikaur powerpill reflector rsync shellcheck
+
+  echo
+  echo "=========================================================="
+  echo "Link embedded 'powerpill' configuration file to the system"
+  echo "----------------------------------------------------------"
+  echo
+
+  sudo ln -sf "$POWERPILL_CUSTOM_CONFIG" /etc/powerpill/powerpill.json
+}
+
+check_script_syntax() {
+  echo "================================="
+  echo "Check script for syntactic errors"
+  echo "================================="
+  echo 
+
+  shellcheck "$0"
 }
 
 upgrade_packages() {
-  echo
   echo "==============================="
   echo "Updating and upgrading packages"
   echo "==============================="
@@ -257,7 +352,7 @@ upgrade_packages() {
   echo "------------------------"
   echo
 
-  sudo rm -rf /var/lib/pacman/sync/*
+  sudo rm -rf "$PACMAN_DB_PATH"/sync/*
 
   echo "==================================="
   echo "Checking for updates..."
@@ -270,8 +365,8 @@ upgrade_packages() {
     --refresh \
     --sysupgrade \
     --sysupgrade \
-    --config "${SCRIPT_DIR}"/config/pacman.conf \
-    --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf 2>&1)
+    --config "$PACMAN_CUSTOM_CONFIG" \
+    --pikaur-config "$PIKAUR_CUSTOM_CONFIG" 2>&1)
 
   echo -e "$pikaur_output" | grep "there is nothing to do"
   test $? -ne 0
@@ -298,8 +393,8 @@ upgrade_packages() {
         --needed \
         --verbose \
         --noconfirm \
-        --config "${SCRIPT_DIR}"/config/pacman.conf \
-        --powerpill-config "${SCRIPT_DIR}"/config/powerpill.json
+        --config "$PACMAN_CUSTOM_CONFIG" \
+        --powerpill-config "$POWERPILL_CUSTOM_CONFIG"
 
     echo
     echo "===================================================="
@@ -317,8 +412,8 @@ upgrade_packages() {
         --noedit \
         --nodiff \
         --noconfirm \
-        --config "${SCRIPT_DIR}"/config/pacman.conf \
-        --pikaur-config "${SCRIPT_DIR}"/config/pikaur.conf \
+        --config "$PACMAN_CUSTOM_CONFIG" \
+        --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
         --overwrite /usr/lib/p11-kit-trust.so \
         --overwrite /usr/bin/fwupdate \
         --overwrite /usr/share/man/man1/fwupdate.1.gz
@@ -340,50 +435,56 @@ finalize() {
 
   echo "=========================================="
   echo
-  echo Please, reboot to apply updates 
-  echo for kernel, firmware, graphics drivers 
-  echo or other drivers and services 
-  echo requiring service restart or system reboot.
+  echo "Please, reboot to apply updates"
+  echo "for kernel, firmware, graphics drivers"
+  echo "or other drivers and services"
+  echo "requiring service restart or system reboot."
   echo
   echo "------------------------------------------"
   echo
-  echo "But if something went wrong"
-  echo " check the configurations"
-  echo " and the pacman log with"
-  echo "  less /var/log/pacman.log"
-  echo
 
-  echo "TODO show the pacman log"
-  echo "only for the last run"
-  echo "with 'grep -n' and 'tail'"
-  echo "from the first line matching to"
-  echo " 'date "+%Y-%m-%dT%H:%M:XX%z"'"
-  echo "until the end"
-  echo '(maybe by calculating the difference'
-  echo "between total line count and"
-  echo 'line number of the grepped date + 1)'
+  local log_line_number_end
+  log_line_number_end=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
+  
+  local update_log_lines=$((log_line_number_end - LOG_LINE_NUMBER_BEGIN))
+
+  echo "tail -n $update_log_lines ""$PACMAN_LOG_FILE"" | less" | xclip -selection clipboard
+
+  echo "But if something went wrong"
+  echo "check the configurations"
+  echo "and the pacman log with the command"
   echo
+  echo "  tail -n $update_log_lines ""$PACMAN_LOG_FILE"" | less"
+  echo
+  echo "which has been btw already copied into your clipboard."
+  echo "Press 'Ctrl + Shift + V' to paste the command."
   echo "=========================================="
   echo
 
-  ln -sf "$(readlink --canonicalize $0)" "$HOME/$(basename $0)"
+  local full_script_path
+  full_script_path="$(readlink --canonicalize "$0")"
+  
+  local script_name
+  script_name="$(basename "$0")"
+  
+  ln -sf "$full_script_path" "$HOME/$script_name"
   ln -sf "${SCRIPT_DIR}/utils/remount_boot_part_as_writable.sh" "$HOME/remount_boot_part_as_writable.sh"
 
   echo "A link to the update script and to remounting script"
-  echo "have been made in your home directory at"
+  echo "have been made in your home directory"
+  echo "for more convenient launching at"
   echo
-  echo "  $(ls $HOME/$(basename $0))"
+  echo "  $(ls "$HOME"/"$script_name")"
   echo
   echo "and"
   echo
-  echo "  $(ls $HOME/remount_boot_part_as_writable.sh)"
+  echo "  $(ls "$HOME"/remount_boot_part_as_writable.sh)"
   echo
-  echo "for more convenient launching"
   echo
 }
 
 main() {
-  request_sudo_password
+  prepare_environment
   set_up_pacman_configuration 
   set_up_pikaur
   update_repo_of_this_script
@@ -391,6 +492,7 @@ main() {
   update_arch_linux_keyring
   remount_boot_partition_as_writable
   install_script_dependencies
+  check_script_syntax
   upgrade_packages
   clean_up
   finalize

@@ -1,12 +1,12 @@
-TODO update Arch Linux installation guide - pacman setup, updating, link to pacman.conf to the new repo
-
 # Arch Linux Updater
 
-Update script for fully automatizing the updating Arch Linux
+Update script for fully automatizing the updating of an Arch Linux.
 
-...although some exceptions apply...
+But when GPG keys change, or something goes terribly wrong, manual intervention is needed.
 
 Sources:
+
+Shell script syntax checker: https://www.shellcheck.net/
 
 https://www.archlinux.org/mirrors/status/
 
