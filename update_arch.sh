@@ -9,13 +9,14 @@ prepare_environment() {
   PACMAN_GPG_DIR="$(extract_path_from_pacman_workspace 'GPG Dir')"
   PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
 
+  LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
+
   local custom_config_dir
   custom_config_dir="${SCRIPT_DIR}/config"
   PACMAN_CUSTOM_CONFIG="${custom_config_dir}/pacman.conf"
   PIKAUR_CUSTOM_CONFIG="${custom_config_dir}/pikaur.conf"
   POWERPILL_CUSTOM_CONFIG="${custom_config_dir}/powerpill.json"
-
-  LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
+  GPG_CUSTOM_CONFIG="${custom_config_dir}/gpg.conf"
 
   echo "================================================================================"
   echo
@@ -161,12 +162,14 @@ update_arch_linux_keyring() {
 
   sudo pacman-key --init
 
-  #TODO copy the gpg.conf file into the config dir
-  # and symlink this file from system to the repo
-  echo "keyserver hkp://keyserver.ubuntu.com" | sudo tee --append """$PACMAN_GPG_DIR""/gpg.conf"
-
-
   echo
+  echo "===================================================="
+  echo "Link embedded 'gpg' configuration file to the system"
+  echo "----------------------------------------------------"
+  echo
+
+  sudo ln -sf "$GPG_CUSTOM_CONFIG" "${PACMAN_GPG_DIR}gpg.conf"
+
   echo "====================================================="
   echo "Add GPG keys for custom repositories and AUR packages"
   echo "-----------------------------------------------------"
@@ -433,15 +436,12 @@ clean_up() {
 finalize() {
   clear -x
 
-  echo "=========================================="
-  echo
+  echo "================================================================================"
   echo "Please, reboot to apply updates"
   echo "for kernel, firmware, graphics drivers"
   echo "or other drivers and services"
   echo "requiring service restart or system reboot."
-  echo
-  echo "------------------------------------------"
-  echo
+  echo "================================================================================"
 
   local log_line_number_end
   log_line_number_end=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
@@ -458,7 +458,7 @@ finalize() {
   echo
   echo "which has been btw already copied into your clipboard."
   echo "Press 'Ctrl + Shift + V' to paste the command."
-  echo "=========================================="
+  echo "================================================================================"
   echo
 
   local full_script_path
@@ -473,13 +473,9 @@ finalize() {
   echo "A link to the update script and to remounting script"
   echo "have been made in your home directory"
   echo "for more convenient launching at"
-  echo
   echo "  $(ls "$HOME"/"$script_name")"
-  echo
   echo "and"
-  echo
   echo "  $(ls "$HOME"/remount_boot_part_as_writable.sh)"
-  echo
   echo
 }
 
