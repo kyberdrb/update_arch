@@ -382,7 +382,14 @@ upgrade_packages() {
   local are_updated_packages_avaliable="$?"
 
   if [[ are_updated_packages_avaliable -eq 0 ]]; then
-    echo -e "$pikaur_output"
+    echo -ne 'n\n' | sudo pacman \
+    --sync \
+    --refresh \
+    --refresh \
+    --sysupgrade \
+    --sysupgrade \
+    --config "$PACMAN_CUSTOM_CONFIG"
+
     echo
 
     echo
