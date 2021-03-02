@@ -383,12 +383,12 @@ upgrade_packages() {
 
   if [[ are_updated_packages_avaliable -eq 0 ]]; then
     echo -ne 'n\n' | sudo pacman \
-    --sync \
-    --refresh \
-    --refresh \
-    --sysupgrade \
-    --sysupgrade \
-    --config "$PACMAN_CUSTOM_CONFIG"
+      --sync \
+      --refresh \
+      --refresh \
+      --sysupgrade \
+      --sysupgrade \
+      --config "$PACMAN_CUSTOM_CONFIG"
 
     echo
 
@@ -478,21 +478,20 @@ finalize() {
   echo "================================================================================"
   echo
 
-  local full_script_path
-  full_script_path="$(readlink --canonicalize "$0")"
-  
   local script_name
   script_name="$(basename "$0")"
+
+  echo "${SCRIPT_DIR}/$script_name"
   
-  ln -sf "$full_script_path" "$HOME/$script_name"
+  ln -sf "${SCRIPT_DIR}/$script_name" "$HOME/$script_name"
   ln -sf "${SCRIPT_DIR}/utils/remount_boot_part_as_writable.sh" "$HOME/remount_boot_part_as_writable.sh"
 
   echo "A link to the update script and to remounting script"
   echo "have been made in your home directory"
   echo "for more convenient launching at"
-  echo "  $(ls "$HOME"/"$script_name")"
+  echo "  ~/${script_name}"
   echo "and"
-  echo "  $(ls "$HOME"/remount_boot_part_as_writable.sh)"
+  echo "  ~/remount_boot_part_as_writable.sh"
   echo
 }
 
@@ -509,6 +508,8 @@ main() {
   upgrade_packages
   clean_up
   finalize
+
+  exit 0
 }
 
 main

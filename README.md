@@ -4,6 +4,10 @@ Update script for fully automatizing the updating of an Arch Linux.
 
 But when GPG keys change, or something goes terribly wrong, manual intervention is needed.
 
+## Usage
+
+`./update_arch.sh 2>&1 | tee ~/update_arch.log`
+
 Sources:
 
 Shell script syntax checker: https://www.shellcheck.net/
