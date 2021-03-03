@@ -6,7 +6,7 @@ But when GPG keys change, or something goes terribly wrong, manual intervention 
 
 ## Usage
 
-`./update_arch.sh 2>&1 | tee ~/update_arch.log`
+`./update_arch.sh`
 
 Sources:
 

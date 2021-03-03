@@ -20,6 +20,8 @@ update_pacman_mirror_servers() {
   # number_of_mirrors=$((number_of_lines_reflector_mirrorlist - number_of_intro_lines))
   # tail -n $number_of_mirrors ~/reflector_mirrorlist > ~/reflector_mirrorlist-clean
 
+  # ===================================================================================
+
   # The hard way `_´ that always works ºOº &) :D :)
   curl -L "https://www.archlinux.org/mirrors/status/" -o ~/Arch_Linux-Mirrors-Status.html
 
