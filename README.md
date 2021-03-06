@@ -76,7 +76,8 @@ The solution is to downgrade the kernel version to the latest working version. A
     Replace existing preset in the bootloader configuration file for the chosen one without the `.preset` suffix by editing the file
 
         sudo nano /boot/loader/entries/arch.conf
-or
+        
+    or
 
         sudo vim /boot/loader/entries/arch.conf
     
