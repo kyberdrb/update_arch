@@ -3,6 +3,22 @@
 prepare_environment() {
   sudo echo
 
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  echo
+  echo "MAKE SURE YOU DO A BACKUP/CLONE BEFORE SYSTEM UPGRADE"
+  echo "      IN CASE SOMETHING GOES WRONG OR BREAKS"
+  echo
+  echo "         ALWAYS HAVE A CLONEZILLA USB"
+  echo "        AND ARCH LINUX INSTALLATION USB"
+  echo "                 TO BOOT FROM"
+  echo "       TO RECOVER FROM CRITICAL FAILURES"
+  echo "         e.g. not bootable system etc."
+  echo
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  echo
+
+  sleep 10
+
   SCRIPT_DIR="$(dirname "$(readlink --canonicalize "$0")")"
   PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
   LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
@@ -32,6 +48,11 @@ finalize() {
   echo "for kernel, firmware, graphics drivers"
   echo "or other drivers and services"
   echo "requiring service restart or system reboot."
+  echo
+  echo "After reboot test:"
+  echo "  - 'journalctl --boot --reverse' for any error messages"
+  echo "  - virtual machines"
+  echo "  - USB functionality"
   echo "================================================================================"
 
   local log_line_number_end
@@ -74,7 +95,7 @@ finalize() {
 
 main() {
   prepare_environment
-  #launch_update_script
+  launch_update_script
   finalize
 }
 

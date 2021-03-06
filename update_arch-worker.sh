@@ -208,7 +208,12 @@ update_arch_linux_keyring() {
   echo "-----------------------------------------"
   echo
    
-  sudo pacman-key --recv-keys 5EE46C4C --keyserver hkp://pool.sks-keyservers.net
+  echo "If the downloading of the graysky's GPG key hangs"
+  echo "try downloading it from a different keyserver"
+  echo
+  echo "    sudo pacman-key --recv-keys 5EE46C4C --keyserver hkp://pool.sks-keyservers.net"
+
+  sudo pacman-key --recv-keys 5EE46C4C
   sudo pacman-key --lsign-key 5EE46C4C
 
   echo
@@ -243,6 +248,14 @@ update_arch_linux_keyring() {
 
   gpg --recv-keys BE793007AD22DF7E
   gpg --lsign-key BE793007AD22DF7E
+
+
+  #linux-libre linux-libre-headers
+  # AUR repo
+  #gpg --recv-keys BCB7CF877E7D47A7
+  #echo -ne 'y\n' | gpg --lsign-keys BCB7CF877E7D47A7
+  #gpg --recv-keys 227CA7C556B2BA78
+  #echo -ne 'y\n' | gpg --lsign-keys 227CA7C556B2BA78
 
   echo
   echo "==========================================================="
@@ -371,7 +384,6 @@ upgrade_packages() {
     --refresh \
     --refresh \
     --sysupgrade \
-    --sysupgrade \
     --config "$PACMAN_CUSTOM_CONFIG" \
     --pikaur-config "$PIKAUR_CUSTOM_CONFIG" 2>&1)
 
@@ -384,7 +396,6 @@ upgrade_packages() {
       --sync \
       --refresh \
       --refresh \
-      --sysupgrade \
       --sysupgrade \
       --config "$PACMAN_CUSTOM_CONFIG"
 
@@ -407,7 +418,7 @@ upgrade_packages() {
     sudo powerpill \
         --sync \
         --refresh --refresh \
-        --sysupgrade --sysupgrade \
+        --sysupgrade \
         --needed \
         --verbose \
         --noconfirm \
@@ -415,17 +426,16 @@ upgrade_packages() {
         --powerpill-config "$POWERPILL_CUSTOM_CONFIG"
 
     echo
-    echo "===================================================="
-    echo "Updating and upgrading packages AUR packages"
-    echo "and official packages that haven't yet been updated"
-    echo "to the latest version or haven't been updated at all"
-    echo "----------------------------------------------------"
+    echo "============================================================="
+    echo "Updating and upgrading AUR package"
+    echo "and official packages that had been downgraded by 'powerpill'"
+    echo "-------------------------------------------------------------"
     echo 
 
     pikaur \
         --sync \
         --refresh --refresh \
-        --sysupgrade --sysupgrade \
+        --sysupgrade \
         --verbose \
         --noedit \
         --nodiff \
