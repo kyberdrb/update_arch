@@ -34,12 +34,16 @@ remount_boot_partition_as_writable() {
   echo "Remounting EFI boot partition to the same boot point as writable"
   echo "----------------------------------------------------------------"
   echo
+  echo "sudo mount -o remount,rw $BOOT_PARTITION $BOOT_PARTITION_MOUNT_POINT"
+  echo
 
   sudo mount -o remount,rw $BOOT_PARTITION $BOOT_PARTITION_MOUNT_POINT
 
   echo "========================================="
   echo "Checking partition stats after remounting"
   echo "-----------------------------------------"
+  echo
+  echo "mount -v | grep $BOOT_PARTITION"
   echo
 
   mount -v | grep $BOOT_PARTITION
