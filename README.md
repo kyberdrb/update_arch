@@ -98,6 +98,7 @@ The solution is to downgrade the kernel version to the latest working version. A
 - https://archlinux.org/pacman/pacman.conf.5.html#_options
 - https://wiki.archlinux.org/index.php/System_maintenance
 - https://github.com/kyberdrb/arch_linux_installation_guide/blob/master/README.md
+- https://www.unixmen.com/solve-arch-linux-kernel-panic/
 
 Sources:
 
