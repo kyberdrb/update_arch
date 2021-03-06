@@ -102,6 +102,8 @@ The solution is to downgrade the kernel version to the latest working version. A
 
 Sources:
 
+Kernel parameters: https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt
+
 Shell script syntax checker: https://www.shellcheck.net/
 
 https://www.archlinux.org/mirrors/status/

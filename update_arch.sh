@@ -37,11 +37,20 @@ extract_path_from_pacman_workspace() {
 }
 
 launch_update_script() {
+  # TODO save log with a timestamp just like with 'mirrorlist' backup in 'utils/update_pacman_mirror_servers.sh'
   "$SCRIPT_DIR/update_arch-worker.sh" 2>&1 | tee "$SCRIPT_DIR/update_arch.log"
 }
 
 finalize() {
   clear -x
+
+  echo "=========================================="
+  echo "Editing Chromium shortcut in order"
+  echo "to disable 'gnome-keyring' password prompt"
+  echo "------------------------------------------"
+
+  # TODO move to this repo and make a link to 'gists' repo
+  "${SCRIPT_DIR}/../Linux_utils_and_gists/chromium_disable_gnome-keyring_password_prompt.sh"
 
   echo "================================================================================"
   echo "Please, reboot to apply updates"
