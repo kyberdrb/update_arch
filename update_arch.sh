@@ -22,6 +22,8 @@ prepare_environment() {
   SCRIPT_DIR="$(dirname "$(readlink --canonicalize "$0")")"
   PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
   LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
+  LOG_DIR="$SCRIPT_DIR/logs"
+  BACKUP_TIME_AND_DATE=$(date "+%Y_%m_%d-%H_%M_%S")
 }
 
 # TODO extract duplicate function from all scripts into a separate script to be imported in all files
@@ -37,8 +39,7 @@ extract_path_from_pacman_workspace() {
 }
 
 launch_update_script() {
-  # TODO save log with a timestamp just like with 'mirrorlist' backup in 'utils/update_pacman_mirror_servers.sh'
-  "$SCRIPT_DIR/update_arch-worker.sh" 2>&1 | tee "$SCRIPT_DIR/update_arch.log"
+  "$SCRIPT_DIR/update_arch-worker.sh" 2>&1 | tee "$LOG_DIR/update_arch-${BACKUP_TIME_AND_DATE}.log"
 }
 
 finalize() {
@@ -82,7 +83,7 @@ finalize() {
   echo
   echo "or check the full output of the script with"
   echo
-  echo "  less ${SCRIPT_DIR}/update_arch.log"
+  echo "  less ${LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}.log"
   echo
   echo "================================================================================"
   echo
