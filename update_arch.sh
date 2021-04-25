@@ -22,8 +22,11 @@ prepare_environment() {
   SCRIPT_DIR="$(dirname "$(readlink --canonicalize "$0")")"
   PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
   LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
+
   LOG_DIR="$SCRIPT_DIR/logs"
-  mkdir "${SCRIPT_DIR}/${LOG_DIR}"
+  mkdir "${LOG_DIR}"
+  echo "Log dir for update script: ${LOG_DIR}"
+
   BACKUP_TIME_AND_DATE=$(date "+%Y_%m_%d-%H_%M_%S")
 }
 
