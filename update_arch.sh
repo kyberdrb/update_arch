@@ -23,7 +23,7 @@ prepare_environment() {
   PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
   LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
 
-  LOG_DIR="$SCRIPT_DIR/logs"
+  LOG_DIR="${SCRIPT_DIR}logs"
   mkdir "${LOG_DIR}"
   echo "Log dir for update script: ${LOG_DIR}"
 
@@ -43,7 +43,7 @@ extract_path_from_pacman_workspace() {
 }
 
 launch_update_script() {
-  "$SCRIPT_DIR/update_arch-worker.sh" 2>&1 | tee "$LOG_DIR/update_arch-${BACKUP_TIME_AND_DATE}.log"
+  "$SCRIPT_DIR/update_arch-worker.sh" 2>&1 | tee "${LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}.log"
 }
 
 finalize() {
