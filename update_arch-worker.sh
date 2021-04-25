@@ -119,8 +119,8 @@ update_repo_of_this_script() {
   local is_local_repo_outdated="$?"
   if [[ is_local_repo_outdated -eq 0 ]]; then
     echo "Repository updated."
-    echo "Please, run the script again."
-    exit 1
+    echo "Launching the script again..."
+    "$0"
   fi
 
   echo "======================================="
