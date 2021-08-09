@@ -23,7 +23,7 @@ prepare_environment() {
   PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
   LOG_LINE_NUMBER_BEGIN=$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)
 
-  LOG_DIR="${SCRIPT_DIR}logs"
+  LOG_DIR="${SCRIPT_DIR}/logs"
   mkdir "${LOG_DIR}"
   echo "Log dir for update script: ${LOG_DIR}"
 
@@ -55,7 +55,7 @@ finalize() {
   echo "------------------------------------------"
 
   # TODO move to this repo and make a link to 'gists' repo
-  "${SCRIPT_DIR}/../Linux_utils_and_gists/chromium_disable_gnome-keyring_password_prompt.sh"
+  "${SCRIPT_DIR}/utils/chromium_disable_gnome-keyring_password_prompt.sh"
 
   echo "================================================================================"
   echo "Please, reboot to apply updates"

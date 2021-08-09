@@ -414,6 +414,8 @@ upgrade_packages() {
     echo
     echo "TODO replace 'powerpill' with 'pacman'"
     echo "when 'pacman 6.0' or higher will be officialy released"
+    echo
+    echo "---------------------------------------------------------------"
 
     sudo powerpill \
         --sync \
@@ -427,7 +429,7 @@ upgrade_packages() {
 
     echo
     echo "============================================================="
-    echo "Updating and upgrading AUR package"
+    echo "Updating and upgrading AUR packages"
     echo "and official packages that had been downgraded by 'powerpill'"
     echo "-------------------------------------------------------------"
     echo 
