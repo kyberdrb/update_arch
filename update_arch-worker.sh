@@ -216,15 +216,15 @@ update_arch_linux_keyring() {
   sudo pacman-key --recv-keys 5EE46C4C
   sudo pacman-key --lsign-key 5EE46C4C
 
-  echo
-  echo "========================================"
-  echo "Add GPG key for 'post-factum' repository"
-  echo '(unofficial repo)'
-  echo "----------------------------------------"
-  echo
+  #echo
+  #echo "========================================"
+  #echo "Add GPG key for 'post-factum' repository"
+  #echo '(unofficial repo)'
+  #echo "----------------------------------------"
+  #echo
 
-  sudo pacman-key --keyserver hkp://pool.sks-keyservers.net --recv-keys 95C357D2AF5DA89D
-  sudo pacman-key --lsign-key 95C357D2AF5DA89D
+  #sudo pacman-key --keyserver hkp://pool.sks-keyservers.net --recv-keys 95C357D2AF5DA89D
+  #sudo pacman-key --lsign-key 95C357D2AF5DA89D
  
   echo
   echo "======================================"
