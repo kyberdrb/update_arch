@@ -54,7 +54,6 @@ finalize() {
   echo "to disable 'gnome-keyring' password prompt"
   echo "------------------------------------------"
 
-  # TODO move to this repo and make a link to 'gists' repo
   "${SCRIPT_DIR}/utils/chromium_disable_gnome-keyring_password_prompt.sh"
 
   echo "================================================================================"
