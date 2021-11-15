@@ -379,75 +379,43 @@ upgrade_packages() {
   echo "-----------------------------------"
   echo
 
-  pikaur_output=$(echo -ne 'n\n' | pikaur \
-    --sync \
-    --refresh \
-    --refresh \
-    --sysupgrade \
-    --config "$PACMAN_CUSTOM_CONFIG" \
-    --pikaur-config "$PIKAUR_CUSTOM_CONFIG" 2>&1)
+  echo "---------------------------------------------------------------"
+  echo
+  echo "TODO replace 'powerpill' with 'pacman'"
+  echo "when 'pacman 6.0' or higher will be officialy released"
+  echo
+  echo "---------------------------------------------------------------"
 
-  echo -e "$pikaur_output" | grep "there is nothing to do"
-  test $? -ne 0
-  local are_updated_packages_avaliable="$?"
-
-  if [[ are_updated_packages_avaliable -eq 0 ]]; then
-    echo -ne 'n\n' | sudo pacman \
+  sudo powerpill \
       --sync \
-      --refresh \
-      --refresh \
+      --refresh --refresh \
       --sysupgrade \
-      --config "$PACMAN_CUSTOM_CONFIG"
+      --needed \
+      --verbose \
+      --noconfirm \
+      --config "$PACMAN_CUSTOM_CONFIG" \
+      --powerpill-config "$POWERPILL_CUSTOM_CONFIG"
 
-    echo
+  echo
+  echo "============================================================="
+  echo "Updating and upgrading AUR packages"
+  echo "and official packages that had been downgraded by 'powerpill'"
+  echo "-------------------------------------------------------------"
+  echo 
 
-    echo
-    echo "=========================================================="
-    echo "Pacman configuration file"
-    echo "had been patched for 'powerpill' to resolve error messages"
-    echo "according to"
-    echo " https://wiki.archlinux.org/index.php/Powerpill#Troubleshooting"
-    echo "and"
-    echo " https://bbs.archlinux.org/viewtopic.php?pid=1254940#p1254940"
-    echo "---------------------------------------------------------------"
-
-    echo
-    echo "TODO replace 'powerpill' with 'pacman'"
-    echo "when 'pacman 6.0' or higher will be officialy released"
-    echo
-    echo "---------------------------------------------------------------"
-
-    sudo powerpill \
-        --sync \
-        --refresh --refresh \
-        --sysupgrade \
-        --needed \
-        --verbose \
-        --noconfirm \
-        --config "$PACMAN_CUSTOM_CONFIG" \
-        --powerpill-config "$POWERPILL_CUSTOM_CONFIG"
-
-    echo
-    echo "============================================================="
-    echo "Updating and upgrading AUR packages"
-    echo "and official packages that had been downgraded by 'powerpill'"
-    echo "-------------------------------------------------------------"
-    echo 
-
-    pikaur \
-        --sync \
-        --refresh --refresh \
-        --sysupgrade \
-        --verbose \
-        --noedit \
-        --nodiff \
-        --noconfirm \
-        --config "$PACMAN_CUSTOM_CONFIG" \
-        --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
-        --overwrite /usr/lib/p11-kit-trust.so \
-        --overwrite /usr/bin/fwupdate \
-        --overwrite /usr/share/man/man1/fwupdate.1.gz
-  fi
+  pikaur \
+      --sync \
+      --refresh --refresh \
+      --sysupgrade \
+      --verbose \
+      --noedit \
+      --nodiff \
+      --noconfirm \
+      --config "$PACMAN_CUSTOM_CONFIG" \
+      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
+      --overwrite /usr/lib/p11-kit-trust.so \
+      --overwrite /usr/bin/fwupdate \
+      --overwrite /usr/share/man/man1/fwupdate.1.gz
 }
 
 clean_up() {
