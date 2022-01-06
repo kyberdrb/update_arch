@@ -79,14 +79,14 @@ finalize() {
   echo "check the configurations"
   echo "and the pacman log with the command"
   echo
-  echo "  tail -n $update_log_lines ""$PACMAN_LOG_FILE"" | less"
+  echo "tail -n $update_log_lines ""$PACMAN_LOG_FILE"" | less"
   echo
   echo "which has been btw already copied into your clipboard."
   echo "Press 'Ctrl + Shift + V' to paste the command."
   echo
   echo "or check the full output of the script with"
   echo
-  echo "  less ${LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}.log"
+  echo "less ${LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}.log"
   echo
   echo "================================================================================"
   echo
@@ -95,12 +95,16 @@ finalize() {
   script_name="$(basename "$0")"
 
   ln -sf "${SCRIPT_DIR}/$script_name" "$HOME/$script_name"
+  ln -sf "${SCRIPT_DIR}/update_all_installed_ignored_packages.sh" "$HOME/update_all_installed_ignored_packages.sh"
   ln -sf "${SCRIPT_DIR}/utils/remount_boot_part_as_writable.sh" "$HOME/remount_boot_part_as_writable.sh"
 
-  echo "A link to the update script and to remounting script"
+  echo "A link to the update scripts and to remounting script"
   echo "have been made in your home directory"
   echo "for more convenient launching at"
-  echo "  ~/${script_name}"
+  echo
+  echo "~/${script_name}"
+  echo "~/update_all_installed_ignored_packages.sh"
+  echo
   echo "and"
   echo "  ~/remount_boot_part_as_writable.sh"
   echo
