@@ -381,8 +381,17 @@ upgrade_packages() {
 
   echo "---------------------------------------------------------------"
   echo
-  echo "TODO replace 'powerpill' with 'pacman'"
-  echo "when 'pacman 6.0' or higher will be officialy released"
+  echo "Using pacman parallel downloading"
+  echo "available from pacman version 6 onwards"
+  echo
+  echo - https://ostechnix.com/enable-parallel-downloading-in-pacman-in-arch-linux/
+  echo - https://lists.archlinux.org/pipermail/pacman-dev/2021-May/025133.html
+  echo
+  echo "Considering whether to remove all powerpill dependencies"
+  echo "from this script and the system"
+  echo "or to keep it as a fallback solution..."
+  echo
+  echo "I'll test pacman's parallel downloads and then I decide."
   echo
   echo "---------------------------------------------------------------"
 
@@ -426,6 +435,8 @@ clean_up() {
 
   rm -rf ~/.libvirt
   sudo powerpill --powerpill-clean
+
+  # TODO execute orphans removal in the "Removing leftovers" section
 }
 
 main() {
