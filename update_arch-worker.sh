@@ -395,7 +395,7 @@ upgrade_packages() {
   echo
   echo "---------------------------------------------------------------"
 
-  sudo powerpill \
+  sudo pacman \
       --sync \
       --refresh --refresh \
       --sysupgrade \
