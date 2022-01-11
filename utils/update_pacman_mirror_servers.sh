@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 update_pacman_mirror_servers() {
   echo "================================"

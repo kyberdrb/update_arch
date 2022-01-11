@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 remount_boot_partition_as_writable() {
   # for upgrading the linux kernel, firmware, video drivers 

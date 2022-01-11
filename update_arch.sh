@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 prepare_environment() {
   sudo echo

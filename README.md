@@ -100,7 +100,7 @@ The solution is to downgrade the kernel version to the latest working version. A
 - https://github.com/kyberdrb/arch_linux_installation_guide/blob/master/README.md
 - https://www.unixmen.com/solve-arch-linux-kernel-panic/
 
-Sources:
+## Sources:
 
 Kernel parameters: https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt
 
@@ -133,6 +133,8 @@ https://xyne.archlinux.ca/projects/powerpill/
 [pikaur - configuration file from custom path](https://github.com/actionless/pikaur/blob/5f2d8a7535e429c2387de23d65e6c47b1f463e56/pikaur/config.py#L48)
 
 https://wiki.archlinux.org/index.php/System_maintenance
+
+https://duckduckgo.com/?q=pacman+6+pacman.conf&ia=web
 
 ---
 
