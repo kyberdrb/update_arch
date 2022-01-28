@@ -276,6 +276,7 @@ update_arch_linux_keyring() {
       --refresh \
       --verbose \
       --noconfirm \
+      --needed \
       --config "$PACMAN_CUSTOM_CONFIG" \
       --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
     archlinux-keyring
@@ -292,6 +293,7 @@ update_arch_linux_keyring() {
       --refresh \
       --verbose \
       --noconfirm \
+      --needed \
       --config "$PACMAN_CUSTOM_CONFIG" \
       --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
     chaotic-mirrorlist
@@ -310,6 +312,7 @@ update_arch_linux_keyring() {
       --refresh \
       --verbose \
       --noconfirm \
+      --needed \
       --config "$PACMAN_CUSTOM_CONFIG" \
       --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
     chaotic-keyring 
@@ -337,19 +340,11 @@ install_script_dependencies() {
   pikaur \
       --sync \
       --refresh \
-      --needed \
       --noconfirm \
+      --needed \
       --config "$PACMAN_CUSTOM_CONFIG" \
       --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
-    pikaur powerpill reflector rsync shellcheck
-
-  echo
-  echo "=========================================================="
-  echo "Link embedded 'powerpill' configuration file to the system"
-  echo "----------------------------------------------------------"
-  echo
-
-  sudo ln -sf "$POWERPILL_CUSTOM_CONFIG" /etc/powerpill/powerpill.json
+    pikaur reflector rsync shellcheck
 }
 
 check_script_syntax() {
@@ -395,6 +390,9 @@ upgrade_packages() {
   echo
   echo "---------------------------------------------------------------"
 
+  # TODO for debugging purposes; reason: testing pacman's parallel downloading + visibility of the 'pacman' and 'pikaur' install scripts
+  exit
+
   sudo pacman \
       --sync \
       --refresh --refresh \
@@ -402,8 +400,7 @@ upgrade_packages() {
       --needed \
       --verbose \
       --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-      --powerpill-config "$POWERPILL_CUSTOM_CONFIG"
+      --config "$PACMAN_CUSTOM_CONFIG"
 
   echo
   echo "============================================================="
