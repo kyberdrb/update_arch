@@ -109,7 +109,8 @@ update_pacman_mirror_servers() {
   echo "Current 'mirrorlist' Backed up mirrorlist file is located at"
   echo " /etc/pacman.d/mirrorlist-${BACKUP_TIME_AND_DATE}.bak"
   echo "-----------------------------------------------------"
-
+  echo
+  
   echo "================================================================"
   echo "Moving new 'mirrorlist' to the pacman directory to apply changes"
   echo "----------------------------------------------------------------"

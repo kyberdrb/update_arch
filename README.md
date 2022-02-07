@@ -10,6 +10,14 @@ But when GPG keys change, or something goes terribly wrong, manual intervention 
 
 `./update_arch.sh`
 
+## Creating an alias in `~/.bashrc`
+
+Add this to the `.bashrc` file
+
+        alias archupdate='/home/laptop/git/kyberdrb/update_arch/update_arch.sh'
+
+Log out or reboot, then log back in, open terminal and use the alias `archupdate` or `archu` + `Tab` `;)` anywhere in the shell to run the update procedure.
+
 ## Preventing a kernel panic
 
 Kernel panic is a situation when the system doesn't boot after some modification, i.e. upgrading the kernel, installing a conflicting module etc.
@@ -132,13 +140,65 @@ https://xyne.archlinux.ca/projects/powerpill/
 
 [pikaur - configuration file from custom path](https://github.com/actionless/pikaur/blob/5f2d8a7535e429c2387de23d65e6c47b1f463e56/pikaur/config.py#L48)
 
-https://wiki.archlinux.org/index.php/System_maintenance
+https://wiki.archlinux.org/title/Pacman#Hooks
 
-https://duckduckgo.com/?q=pacman+6+pacman.conf&ia=web
+https://man.archlinux.org/man/alpm-hooks.5
+
+https://donatoroque.wordpress.com/2017/08/10/creating-pacman-hook-for-cleaning-cache/
+
+https://duckduckgo.com/?q=run+pacman+hook+as+last&ia=web
+
+https://duckduckgo.com/?q=pacman+hookdir&ia=web
+
+https://duckduckgo.com/?q=bash+script+directory+posix&ia=web
+
+https://stackoverflow.com/questions/29832037/how-to-get-script-directory-in-posix-sh
+
+https://duckduckgo.com/?q=double+dash+bash&ia=web
+
+https://unix.stackexchange.com/questions/11376/what-does-double-dash-mean#11382
+
+https://duckduckgo.com/?q=bash+error+assigning+variable+command+not+found&ia=web
+
+https://www.howtogeek.com/439736/how-to-create-aliases-and-shell-functions-on-linux/
+
+https://stackoverflow.com/questions/4088357/how-can-i-override-alias-set-in-bash-aliases
+
+https://stackoverflow.com/questions/7961581/is-there-a-vim-command-to-relocate-a-tab
+
+https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Removing_unused_packages_(orphans)
+
+https://duckduckgo.com/?q=script+echo+into+ineractive+bash&ia=web
+
+https://duckduckgo.com/?q=Pass+input+to+interactive+command+line+program+in+bash&ia=web
+
+https://www.baeldung.com/linux/bash-interactive-prompts
+
+https://duckduckgo.com/?q=linux+terminal+head+except+last+line&ia=web
+
+https://duckduckgo.com/?q=sed+substitute+double+quotes&ia=web
+
+https://unix.stackexchange.com/questions/666084/how-to-use-sed-to-replace-a-string-in-double-quotes-with-a-variable/666093#666093
+
+https://duckduckgo.com/?q=exo+open+terminalemulator+command&ia=web
+
+Passing arguments to `exo-open TerminalEmulator` - https://ubuntuforums.org/showthread.php?t=2428462
+
+https://www.educba.com/bash-export-variable/
+
+https://unix.stackexchange.com/questions/437179/why-cant-an-input-file-be-an-output-file#437181
+
+https://duckduckgo.com/?q=cat+input+file+is+output+file&ia=web&iax=qa
 
 ---
 
 https://wiki.archlinux.org/index.php/Unofficial_user_repositories/Repo-ck#Add_Repo
 
 https://lonewolf.pedrohlc.com/chaotic-aur/
+
+https://wiki.archlinux.org/index.php/System_maintenance
+
+https://duckduckgo.com/?q=pacman+6+pacman.conf&ia=web
+
+https://wiki.archlinux.org/title/Pacman/Package_signing#Initializing_the_keyring `/etc/pacman.d/gnupg/`
 
