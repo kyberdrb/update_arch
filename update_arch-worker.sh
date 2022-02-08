@@ -313,6 +313,10 @@ done
 
 # Updating unofficial - AUR - packages
 
+# TODO comment out 'ParallelDownloads' in '/etc/pacman.conf' to fix the untidy and unelegant output for DB syncing in pikaur
+#   uncomment it after execution
+#   and maybe make an alias for pacman (which uncomments the line before running) and pikaur (which comments out the line before running)
+
 sudo exo-open --launch TerminalEmulator --geometry=240x24 --display :0.0 --show-menubar --show-borders --hide-toolbar --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz" 2>&1 &
 
 
