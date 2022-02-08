@@ -1,0 +1,79 @@
+[options]
+
+# For more options, see 'man pacman.conf'
+
+HoldPkg = pacman glibc linux-lts linux-lts-headers linux-api-headers
+IgnorePkg = linux-lts linux-lts-headers linux-api-headers clion clion-cmake clion-gdb clion-jre clion-lldb
+Architecture = auto
+
+ParallelDownloads = 10
+Color
+VerbosePkgLists
+
+CheckSpace
+
+SigLevel    = Required DatabaseOptional TrustedOnly
+LocalFileSigLevel = Optional
+
+[core]
+SigLevel = PackageRequired
+Include = /etc/pacman.d/mirrorlist
+
+[extra]
+SigLevel = PackageRequired
+Include = /etc/pacman.d/mirrorlist
+
+[community]
+SigLevel = PackageRequired
+Include = /etc/pacman.d/mirrorlist
+
+[multilib]
+SigLevel = PackageRequired
+Include = /etc/pacman.d/mirrorlist
+
+#AUR - Arch User Repository
+[archlinuxfr]
+SigLevel = Never
+Server = http://repo.archlinux.fr/$arch
+
+#virtualbox_extension_pack
+[seblu]
+SigLevel = Optional
+Server = http://al.seblu.net/$repo/$arch
+
+#pocketsphinx
+[ownstuff]
+SigLevel = Never
+Server = https://ftp.f3l.de/~martchus/$repo/os/$arch
+Server = https://martchus.no-ip.biz/repo/arch/$repo/os/$arch
+
+#kernel: linux-lqx linux-lqx-headers
+[liquorix]
+SigLevel = Never
+Server = https://liquorix.net/archlinux/$repo/$arch
+
+#chaotic-keyring
+#kernel: linux-tkg-muqss-skylake linux-tkg-muqss-skylake-headers
+#for using see: https://lonewolf.pedrohlc.com/chaotic-aur/
+[chaotic-aur]
+SigLevel = Never
+Include = /etc/pacman.d/chaotic-mirrorlist
+
+#kernel: linux-ck-skylake linux-ck-skylake-headers
+[repo-ck]
+SigLevel = Never
+Server = http://repo-ck.com/$arch
+Server = https://mirror.lesviallon.fr/$repo/os/$arch
+
+#kernel: linux-pf-skylake linux-pf-headers-skylake
+[home_post-factum_kernels_Arch]
+# 'SigLevel' is set to 'Optional' in order to prevent error after package downloading at package verification:
+#   error: linux-pf-generic: missing required signature
+#   error: linux-pf-headers-generic: missing required signature
+#   error: failed to commit transaction (invalid or corrupted package)
+# 'SigLevel' is also set to 'TrustAll' in order to prevent error at database syncing: signature is unknown trust
+#SigLevel = Optional TrustAll
+# 'SigLevel' set to Never because of inability to import PGP signature into the keyring
+SigLevel = Never
+Server = https://download.opensuse.org/repositories/home:/post-factum:/kernels/Arch/$arch
+
