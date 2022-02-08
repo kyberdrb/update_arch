@@ -1,6 +1,8 @@
 #!/bin/bash
 
-prepare_environment() {
+set -e
+set -x
+
   sudo echo
 
   SCRIPT_DIR="$(dirname "$(readlink --canonicalize "$0")")"
@@ -27,7 +29,10 @@ prepare_environment() {
   echo
   echo "================================================================================"
   echo
-}
+
+
+
+
 
 extract_path_from_pacman_workspace() {
   local pacman_workspace
@@ -40,7 +45,10 @@ extract_path_from_pacman_workspace() {
   echo "$extracted_text"
 }
 
-set_up_pacman_configuration() {
+
+
+
+
   echo "==========================="
   echo "Set up pacman configuration"
   echo "==========================="
@@ -61,9 +69,12 @@ set_up_pacman_configuration() {
 
   #TODO use the long, keyword options '--' instead of the one-letter ones for better readability for all commands
   sudo ln -sf "$PACMAN_CUSTOM_CONFIG" "$PACMAN_DEFAULT_CONFIG_FILE"
-}
 
-set_up_pikaur() {
+
+
+
+
+
   echo "============="
   echo "Set up pikaur"
   echo "============="
@@ -101,9 +112,14 @@ set_up_pikaur() {
   echo
 
   ln -sf "$PIKAUR_CUSTOM_CONFIG" "${HOME}/.config/pikaur.conf"
-}
 
-update_repo_of_this_script() {
+
+
+
+
+
+
+
   echo "========================================"
   echo "Download latest version of update script"
   echo "========================================"
@@ -127,18 +143,30 @@ update_repo_of_this_script() {
   echo "Script is already in the latest version"
   echo "---------------------------------------"
   echo
-}
 
-update_pacman_mirror_servers() {
+
+
+
+
+
+
+
+
   echo "====================================="
   echo "Download fresh list of mirror servers"
   echo "====================================="
   echo
 
   "${SCRIPT_DIR}"/utils/update_pacman_mirror_servers.sh
-}
 
-update_arch_linux_keyring() {
+
+
+
+
+
+
+
+
   echo "=============================="
   echo "Update Arch Linux keyring"
   echo " to avoid PGP signature errors"
@@ -313,9 +341,17 @@ update_arch_linux_keyring() {
       --config "$PACMAN_CUSTOM_CONFIG" \
       --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
     chaotic-keyring 
-}
 
-remount_boot_partition_as_writable() {
+
+
+
+
+
+
+
+
+
+
   echo
   echo "============================================"
   echo "Remounting boot partition as writable"
@@ -325,9 +361,16 @@ remount_boot_partition_as_writable() {
   echo
 
   "${SCRIPT_DIR}"/utils/remount_boot_part_as_writable.sh
-}
 
-install_script_dependencies() {
+
+
+
+
+
+
+
+
+
   echo
   echo "========================================"
   echo "Installing/Upgrading script dependencies"
@@ -350,18 +393,47 @@ install_script_dependencies() {
   echo
 
   sudo ln -sf "$POWERPILL_CUSTOM_CONFIG" /etc/powerpill/powerpill.json
-}
 
-check_script_syntax() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   echo "================================="
   echo "Check script for syntactic errors"
   echo "================================="
   echo 
 
   shellcheck --external-sources "$0"
-}
 
-upgrade_packages() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   echo "==============================="
   echo "Updating and upgrading packages"
   echo "==============================="
@@ -425,9 +497,18 @@ upgrade_packages() {
       --overwrite /usr/lib/p11-kit-trust.so \
       --overwrite /usr/bin/fwupdate \
       --overwrite /usr/share/man/man1/fwupdate.1.gz
-}
 
-clean_up() {
+
+
+
+
+
+
+
+
+
+
+
   echo
   echo "=================="
   echo "Removing leftovers"
@@ -437,21 +518,20 @@ clean_up() {
   sudo powerpill --powerpill-clean
 
   # TODO execute orphans removal in the "Removing leftovers" section
-}
 
-main() {
-  prepare_environment
-  set_up_pacman_configuration 
-  set_up_pikaur
-  update_repo_of_this_script
-  update_pacman_mirror_servers
-  update_arch_linux_keyring
-  remount_boot_partition_as_writable
-  install_script_dependencies
-  check_script_syntax
-  upgrade_packages
-  clean_up
-}
+#main() {
+#  prepare_environment
+#  set_up_pacman_configuration 
+#  set_up_pikaur
+#  update_repo_of_this_script
+#  update_pacman_mirror_servers
+#  update_arch_linux_keyring
+#  remount_boot_partition_as_writable
+#  install_script_dependencies
+#  check_script_syntax
+#  upgrade_packages
+#  clean_up
+#}
 
-main
+#main
 
