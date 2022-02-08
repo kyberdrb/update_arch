@@ -256,11 +256,15 @@ pikaur \
     --refresh \
     --noconfirm \
     --needed \
-    --config "${PACMAN_CUSTOM_CONFIG}" \
-    --pikaur-config "${PIKAUR_CUSTOM_CONFIG}" \
   pikaur
 
 
+pikaur \
+    --sync \
+    --refresh \
+    --noconfirm \
+    --needed \
+  expect
 
 
 
