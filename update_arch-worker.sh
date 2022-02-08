@@ -3,406 +3,308 @@
 set -e
 set -x
 
-  sudo echo
+sudo printf "\r"
 
-  SCRIPT_DIR="$(dirname "$(readlink --canonicalize "$0")")"
-  PACMAN_DEFAULT_CONFIG_FILE="$(extract_path_from_pacman_workspace 'Conf File')"
-  PACMAN_DB_PATH="$(extract_path_from_pacman_workspace 'DB Path')"
-  PACMAN_GPG_DIR="$(extract_path_from_pacman_workspace 'GPG Dir')"
-  PACMAN_LOG_FILE="$(extract_path_from_pacman_workspace 'Log File')"
+PACMAN_DEFAULT_CONFIG_FILE="/etc/pacman.conf"
+REPO_DIR="$(dirname "$(readlink --canonicalize "$0")")"
+BACKUP_DIR="${REPO_DIR}/backup"
+mkdir --parents "${BACKUP_DIR}"
+BACKUP_TIME_AND_DATE=$(cat "${CUSTOM_LOG_DIR}/update_arch-last_time_the_update_was_initiated.log")
+sudo mv "${PACMAN_DEFAULT_CONFIG_FILE}" "${BACKUP_DIR}/pacman.conf-${BACKUP_TIME_AND_DATE}.bak"
 
-  local custom_config_dir
-  custom_config_dir="${SCRIPT_DIR}/config"
-  PACMAN_CUSTOM_CONFIG="${custom_config_dir}/pacman.conf"
-  PIKAUR_CUSTOM_CONFIG="${custom_config_dir}/pikaur.conf"
-  POWERPILL_CUSTOM_CONFIG="${custom_config_dir}/powerpill.json"
-  GPG_CUSTOM_CONFIG="${custom_config_dir}/gpg.conf"
 
-  # TODO extract echo statements with decorations into function to remove duplicate code
-  echo "================================================================================"
-  echo
-  echo "Script directory: $SCRIPT_DIR"
-  echo "Pacman default config file: $PACMAN_DEFAULT_CONFIG_FILE"
-  echo "Pacman database path: $PACMAN_DB_PATH"
-  echo "Pacman GPG directory: $PACMAN_GPG_DIR"
-  echo "Pacman log file: $PACMAN_LOG_FILE"
-  echo
-  echo "================================================================================"
-  echo
+CUSTOM_CONFIG_DIR="${REPO_DIR}/config"
+PACMAN_CUSTOM_CONFIG="${CUSTOM_CONFIG_DIR}/pacman.conf"
+sudo cp --force "${PACMAN_CUSTOM_CONFIG}" "$PACMAN_DEFAULT_CONFIG_FILE"
 
 
 
 
 
-extract_path_from_pacman_workspace() {
-  local pacman_workspace
-  pacman_workspace="$(pacman --verbose 2>/dev/null)"
+
+
+
+
+
+
+
+
+
+
+# Set up pikaur
+
+PIKAUR_INSTALLED=$(pacman --query | grep pikaur)
+if [[ -z $PIKAUR_INSTALLED ]]; then 
+  rm -rf /tmp/pikaur-git
+  mkdir /tmp/pikaur-git
+  curl https://aur.archlinux.org/cgit/aur.git/snapshot/pikaur-git.tar.gz --output /tmp/pikaur-git.tar.gz
+  tar -xvzf /tmp/pikaur-git.tar.gz --directory /tmp/pikaur-git
+  cd /tmp/pikaur-git/pikaur-git || exit
+  makepkg --ignorearch --clean --syncdeps --noconfirm
+  PIKAUR_PACKAGE_NAME=$(ls -- *.tar*)
+
+  sudo pacman \
+      --verbose \
+      --upgrade \
+      --noconfirm \
+      --config "$PACMAN_CUSTOM_CONFIG" \
+    "$PIKAUR_PACKAGE_NAME"
   
-  local searched_text="$1"
-  
-  local extracted_text
-  extracted_text=$(echo -e "$pacman_workspace" | grep "$searched_text" | tr -d ' ' | cut -d':' -f2)
-  echo "$extracted_text"
-}
+  rm -rf /tmp/pikaur-git
+fi
 
+PIKAUR_CUSTOM_CONFIG="${CUSTOM_CONFIG_DIR}/pikaur.conf"
+mv "${HOME}/.config/pikaur.conf" "${BACKUP_DIR}/pikaur.conf-${BACKUP_TIME_AND_DATE}.bak"
+cp --force "$PIKAUR_CUSTOM_CONFIG" "${HOME}/.config/pikaur.conf"
 
 
 
 
-  echo "==========================="
-  echo "Set up pacman configuration"
-  echo "==========================="
-  echo
 
-  echo "==================================="
-  echo "Backup current pacman configuration"
-  echo "-----------------------------------"
-  echo
 
-  BACKUP_TIME_AND_DATE=$(date "+%Y_%m_%d-%H_%M_%S")
-  sudo cp --dereference "$PACMAN_DEFAULT_CONFIG_FILE" "${PACMAN_DEFAULT_CONFIG_FILE}-${BACKUP_TIME_AND_DATE}.bak"
 
-  echo "======================================================="
-  echo "Link embedded 'pacman' configuration file to the system"
-  echo "-------------------------------------------------------"
-  echo
 
-  #TODO use the long, keyword options '--' instead of the one-letter ones for better readability for all commands
-  sudo ln -sf "$PACMAN_CUSTOM_CONFIG" "$PACMAN_DEFAULT_CONFIG_FILE"
+# Download latest version of update script
 
+git_pull_status=$(git -C "$REPO_DIR" pull)
 
+echo "$git_pull_status" | grep --invert-match "Already up to date."
 
+test $? -eq 0
 
+is_local_repo_outdated="$?"
+if [[ is_local_repo_outdated -eq 0 ]]; then
+  printf "%s\n" "Repository updated, or some merge problem occured."
+  printf "%s\n" "Check that and then please, launch the script again."
+  exit
+fi
 
 
-  echo "============="
-  echo "Set up pikaur"
-  echo "============="
-  echo
 
-  PIKAUR_INSTALLED=$(pacman --query | grep pikaur)
-  if [[ -z $PIKAUR_INSTALLED ]]; then 
-    rm -rf /tmp/pikaur-git
-    mkdir /tmp/pikaur-git
-    curl https://aur.archlinux.org/cgit/aur.git/snapshot/pikaur-git.tar.gz --output /tmp/pikaur-git.tar.gz
-    tar -xvzf /tmp/pikaur-git.tar.gz --directory /tmp/pikaur-git
-    cd /tmp/pikaur-git/pikaur-git || exit
-    makepkg --ignorearch --clean --syncdeps --noconfirm
-    PIKAUR_PACKAGE_NAME=$(ls -- *.tar*)
 
-    sudo pacman \
-        --verbose \
-        --upgrade \
-        --noconfirm \
-        --config "$PACMAN_CUSTOM_CONFIG" \
-      "$PIKAUR_PACKAGE_NAME"
-    
-    rm -rf /tmp/pikaur-git
-  fi
 
-  echo "================================================="
-  echo "'pikaur' package installed"
-  echo 'Arch User Repository (AUR) Package Helper present'
-  echo "-------------------------------------------------"
-  echo 
 
-  echo "======================================================="
-  echo "Link embedded 'pikaur' configuration file to the system"
-  echo "-------------------------------------------------------"
-  echo
 
-  ln -sf "$PIKAUR_CUSTOM_CONFIG" "${HOME}/.config/pikaur.conf"
 
 
+# Download fresh list of mirror servers
+"${REPO_DIR}"/utils/update_pacman_mirror_servers.sh
 
 
 
 
 
 
-  echo "========================================"
-  echo "Download latest version of update script"
-  echo "========================================"
-  echo
 
-  local git_pull_status
-  git_pull_status=$(git -C "$SCRIPT_DIR" pull)
 
-  echo "$git_pull_status" | grep --invert-match "Already up to date."
 
-  test $? -eq 0
+# Update Arch Linux keyring to avoid PGP signature interactive prompts or errors
 
-  local is_local_repo_outdated="$?"
-  if [[ is_local_repo_outdated -eq 0 ]]; then
-    echo "Repository updated."
-    echo "Launching the script again..."
-    "$0"
-  fi
 
-  echo "======================================="
-  echo "Script is already in the latest version"
-  echo "---------------------------------------"
-  echo
 
 
+# Copy embedded gpg configuration file to the system
 
+PACMAN_GPG_DIR="$(pacman --verbose 2--config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "GPG Dir" | rev | cut --delimiter=' ' --fields=1 | rev)"
+sudo mv "${PACMAN_GPG_DIR}gpg.conf" "${BACKUP_DIR}/gpg.conf-${BACKUP_TIME_AND_DATE}.bak"
 
+GPG_CUSTOM_CONFIG="${CUSTOM_CONFIG_DIR}/gpg.conf"
+sudo cp --force "${GPG_CUSTOM_CONFIG}" "${PACMAN_GPG_DIR}gpg.conf"
 
 
 
 
 
-  echo "====================================="
-  echo "Download fresh list of mirror servers"
-  echo "====================================="
-  echo
+# Cleanup GPG keys
+#  see https://bbs.archlinux.org/viewtopic.php?pid=1837082#p1837082"
 
-  "${SCRIPT_DIR}"/utils/update_pacman_mirror_servers.sh
+sudo rm -R "$PACMAN_GPG_DIR"
+sudo rm -R /root/.gnupg/
+rm -rf ~/.gnupg/
 
 
 
 
+# Initialize pacman keyring
 
+sudo pacman-key --init
 
+# Add GPG keys for custom repositories and AUR packages
 
+sudo pacman-key --populate archlinux
+sudo gpg --refresh-keys
 
+# Add GPG key for seblu repository
+# Type: unofficial repo
+sudo pacman-key --recv-keys 76F3EB6DA1C5F938AD642DC438DCEEBE387A1EEE
+sudo pacman-key --lsign-key 76F3EB6DA1C5F938AD642DC438DCEEBE387A1EEE
 
-  echo "=============================="
-  echo "Update Arch Linux keyring"
-  echo " to avoid PGP signature errors"
-  echo "=============================="
+# Add GPG key for liquorix repository
+# Type: unofficial repo
+sudo pacman-key --recv-keys 9AE4078033F8024D
+sudo pacman-key --lsign-key 9AE4078033F8024D
 
-  echo
-  echo "======================"
-  echo "Cleanup GPG keys first"
-  echo " see https://bbs.archlinux.org/viewtopic.php?pid=1837082#p1837082"
-  echo "----------------------"
-  echo
+# Add GPG key for ck repository - graysky
+# Type: unofficial repo
+# If the downloading of the graysky GPG key hangs try downloading it from a different keyserver"
+# e.g.
+# sudo pacman-key --recv-keys 5EE46C4C --keyserver hkp://pool.sks-keyservers.net"
+sudo pacman-key --recv-keys 5EE46C4C
+sudo pacman-key --lsign-key 5EE46C4C
 
-  sudo rm -R "$PACMAN_GPG_DIR"
-  sudo rm -R /root/.gnupg/
-  rm -rf ~/.gnupg/
+# Add GPG key for chaotic repository - Pedro Henrique Lara Campos - pedrohlc
+# Type: unofficial repo
+sudo pacman-key --keyserver hkp://pool.sks-keyservers.net --recv-keys 3056513887B78AEB
+sudo pacman-key --lsign-key 3056513887B78AEB
 
-  echo "========================="
-  echo "Initialize pacman keyring"
-  echo "-------------------------"
-  echo
+# Add GPG key for Pedram Pourang - tsujan - required when building compton-conf AUR package - see https://aur.archlinux.org/packages/compton-conf/#pinned-742136
+# Type: AUR repo
+gpg --recv-keys BE793007AD22DF7E
+gpg --lsign-key BE793007AD22DF7E
 
-  sudo pacman-key --init
 
-  echo
-  echo "===================================================="
-  echo "Link embedded 'gpg' configuration file to the system"
-  echo "----------------------------------------------------"
-  echo
+# Uprade keyrings and additional mirrorlists for repositories
 
-  sudo ln -sf "$GPG_CUSTOM_CONFIG" "${PACMAN_GPG_DIR}gpg.conf"
+pikaur \
+  --sync \
+  --refresh --refresh \
+  --verbose \
 
-  echo "====================================================="
-  echo "Add GPG keys for custom repositories and AUR packages"
-  echo "-----------------------------------------------------"
-  echo
-
-  sudo pacman-key --populate archlinux
-  sudo gpg --refresh-keys
-
-  #TODO extract repeating GPG commands into a separate function
-  # that will automatically switch between pacman-key and gpg commands
-  # by to an argument
-  echo
-  echo "================================"
-  echo "Add GPG key for seblu repository"
-  echo '(unofficial repo)'
-  echo "--------------------------------"
-  echo
-
-  sudo pacman-key --recv-keys 76F3EB6DA1C5F938AD642DC438DCEEBE387A1EEE
-  sudo pacman-key --lsign-key 76F3EB6DA1C5F938AD642DC438DCEEBE387A1EEE
-
-  echo
-  echo "====================================="
-  echo "Add GPG key for 'liquorix' repository"
-  echo '(unofficial repo)'
-  echo "-------------------------------------"
-  echo
-
-  sudo pacman-key --recv-keys 9AE4078033F8024D
-  sudo pacman-key --lsign-key 9AE4078033F8024D
-
-  echo
-  echo "========================================="
-  echo "Add GPG key for 'ck' repository - graysky"
-  echo '(unofficial repo)'
-  echo "-----------------------------------------"
-  echo
-   
-  echo "If the downloading of the graysky's GPG key hangs"
-  echo "try downloading it from a different keyserver"
-  echo
-  echo "    sudo pacman-key --recv-keys 5EE46C4C --keyserver hkp://pool.sks-keyservers.net"
-
-  sudo pacman-key --recv-keys 5EE46C4C
-  sudo pacman-key --lsign-key 5EE46C4C
-
-  #echo
-  #echo "========================================"
-  #echo "Add GPG key for 'post-factum' repository"
-  #echo '(unofficial repo)'
-  #echo "----------------------------------------"
-  #echo
-
-  #sudo pacman-key --keyserver hkp://pool.sks-keyservers.net --recv-keys 95C357D2AF5DA89D
-  #sudo pacman-key --lsign-key 95C357D2AF5DA89D
- 
-  echo
-  echo "======================================"
-  echo "Add GPG key for 'chaotic' repository:"
-  echo " Pedro Henrique Lara Campos - pedrohlc"
-  echo '(unofficial repo)'
-  echo "--------------------------------------"
-  echo
-
-  sudo pacman-key --keyserver hkp://pool.sks-keyservers.net --recv-keys 3056513887B78AEB
-  sudo pacman-key --lsign-key 3056513887B78AEB
-
-  echo
-  echo "================================================="
-  echo "Add GPG key for Pedram Pourang - tsujan"
-  echo "Required when building 'compton-conf' AUR package"
-  echo '  see (https://aur.archlinux.org/packages/compton-conf/#pinned-742136)'
-  echo '(AUR repo)'
-  echo "-------------------------------------------------"
-  echo
-
-  gpg --recv-keys BE793007AD22DF7E
-  gpg --lsign-key BE793007AD22DF7E
-
-
-  #linux-libre linux-libre-headers
-  # AUR repo
-  #gpg --recv-keys BCB7CF877E7D47A7
-  #echo -ne 'y\n' | gpg --lsign-keys BCB7CF877E7D47A7
-  #gpg --recv-keys 227CA7C556B2BA78
-  #echo -ne 'y\n' | gpg --lsign-keys 227CA7C556B2BA78
-
-  echo
-  echo "==========================================================="
-  echo "Uprade keyrings and additional mirrorlists for repositories"
-  echo "-----------------------------------------------------------"
-  echo
-
-  #TODO extract repeating pikaur, and maybe pacman and powerpill statements into a separate function with variable number of arguments
-  pikaur \
+pikaur \
     --sync \
-    --refresh --refresh \
+    --refresh \
     --verbose \
+    --noconfirm \
+  archlinux-keyring
+
+# Update chaotic-mirrorlists
+# chaotic-mirrorlist adds separate mirrorlist file in
+# /etc/pacman.d/chaotic-mirrorlist
+
+pikaur \
+    --sync \
+    --refresh \
+    --verbose \
+    --noconfirm \
+  chaotic-mirrorlist
+
+# Update chaotic-keyring which adds GPG keys for chaotic-aur repo
+# For chaotic-aur repo setup, see https://lonewolf.pedrohlc.com/chaotic-aur/
+
+pikaur \
+    --sync \
+    --refresh \
+    --verbose \
+    --noconfirm \
+  chaotic-keyring 
+
+
+
+
+
+
+
+
+
+
+
+# Remounting boot partition as writable in order to make the upgrade of kernel and other kernel dependend modules possible
+
+"${REPO_DIR}"/utils/remount_boot_part_as_writable.sh
+
+
+
+
+
+
+
+
+# Installing/Upgrading script dependencies
+
+pikaur \
+    --sync \
+    --refresh \
+    --needed \
+    --noconfirm \
     --config "$PACMAN_CUSTOM_CONFIG" \
-    --pikaur-config "$PIKAUR_CUSTOM_CONFIG"
+    --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
+  pikaur powerpill reflector rsync shellcheck
 
-  pikaur \
-      --sync \
-      --refresh \
-      --verbose \
-      --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
-    archlinux-keyring
 
-  echo 
-  echo "====================================================="
-  echo "'chaotic-mirrorlist' adds separate mirrorlist file in"
-  echo "  /etc/pacman.d/chaotic-mirrorlist"
-  echo "-----------------------------------------------------"
-  echo
 
-  pikaur \
-      --sync \
-      --refresh \
-      --verbose \
-      --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
-    chaotic-mirrorlist
 
-  echo
-  echo "====================================================="
-  echo "'chaotic-keyring' add GPG keys for 'chaotic-aur' repo"
-  echo "-----------------------------------------------------"
-  echo "For chaotic-aur repo setup, see page"
-  echo "  https://lonewolf.pedrohlc.com/chaotic-aur/"
-  echo "-----------------------------------------------------"
-  echo
 
-  pikaur \
-      --sync \
-      --refresh \
-      --verbose \
-      --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
-    chaotic-keyring 
 
 
 
 
+# Updating and upgrading packages
 
+# Clear pacman databases
 
+PACMAN_DB_PATH="$(pacman --verbose 2--config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "DB Path" | rev | cut --delimiter=' ' --fields=1 | rev)"
+sudo rm -rf "$PACMAN_DB_PATH"/sync/*
 
 
 
 
 
-  echo
-  echo "============================================"
-  echo "Remounting boot partition as writable"
-  echo " in order to make he upgrade of kernel"
-  echo " and other kernel dependend modules possible"
-  echo "============================================"
-  echo
 
-  "${SCRIPT_DIR}"/utils/remount_boot_part_as_writable.sh
+# Updating official packages
 
+sudo exo-open --launch TerminalEmulator --geometry=240x24 --display :0.0 --show-menubar --show-borders --hide-toolbar --hold --command="pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm" 2>&1
 
 
 
 
 
 
+# wait for the lock
+while [ ! -f "/var/lib/pacman/db.lck" ]
+do
+  sleep 1
+done
 
+while [ -f "/var/lib/pacman/db.lck" ]
+do
+  # wait for the drop of the lock to proceed
+  if [ ! -f "/var/lib/pacman/db.lck" ]
+  then
+    break
+  fi
 
+  sleep 1
+done
 
-  echo
-  echo "========================================"
-  echo "Installing/Upgrading script dependencies"
-  echo "========================================"
-  echo
 
-  pikaur \
-      --sync \
-      --refresh \
-      --needed \
-      --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
-    pikaur powerpill reflector rsync shellcheck
 
-  echo
-  echo "=========================================================="
-  echo "Link embedded 'powerpill' configuration file to the system"
-  echo "----------------------------------------------------------"
-  echo
 
-  sudo ln -sf "$POWERPILL_CUSTOM_CONFIG" /etc/powerpill/powerpill.json
 
 
+# Updating unofficial - AUR - packages
 
+sudo exo-open --launch TerminalEmulator --geometry=240x24 --display :0.0 --show-menubar --show-borders --hide-toolbar --hold --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz" 2>&1
 
 
 
 
 
+# wait for the lock
+while [ ! -f "/var/lib/pacman/db.lck" ]
+do
+  sleep 1
+done
 
+while [ -f "/var/lib/pacman/db.lck" ]
+do
+  # wait for the drop of the lock to proceed
+  if [ ! -f "/var/lib/pacman/db.lck" ]
+  then
+    break
+  fi
 
+  sleep 1
+done
 
 
 
@@ -412,126 +314,144 @@ extract_path_from_pacman_workspace() {
 
 
 
-  echo "================================="
-  echo "Check script for syntactic errors"
-  echo "================================="
-  echo 
 
-  shellcheck --external-sources "$0"
 
+# Removing leftovers
 
+rm -rf ~/.libvirt
 
+# Remove orphaned packages
 
+# Step 1: Remove implicitly installed orphaned packages
 
+# Backup pacman output for uninstallation of all orphaned packages
 
+#-s, --recursive
+#    Remove each target specified including all of their dependencies, provided that (A) they are not required by
+#    other packages; and (B) they were not explicitly installed by the user. This operation is recursive and analogous
+#    to a backwards --sync operation, and it helps keep a clean system without orphans. ...
 
+yes n | sudo pacman --remove --nosave --recursive $(sudo pacman --query --deps --unrequired --quiet) > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log" 2>/dev/null
 
 
 
 
 
 
+# Save all orphaned packages that were installed implicitly (automatically), as a dependency for other packages
 
+sudo pacman --query --deps --unrequired --quiet > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies.log"
 
 
-  echo "==============================="
-  echo "Updating and upgrading packages"
-  echo "==============================="
-  echo 
 
-  echo "========================"
-  echo "Clear 'pacman' databases"
-  echo "------------------------"
-  echo
 
-  sudo rm -rf "$PACMAN_DB_PATH"/sync/*
 
-  echo "==================================="
-  echo "Checking for updates..."
-  echo "-----------------------------------"
-  echo
+# Uninstall all orphaned packages that were installed implicitly (automatically), as a dependency for other packages
 
-  echo "---------------------------------------------------------------"
-  echo
-  echo "Using pacman parallel downloading"
-  echo "available from pacman version 6 onwards"
-  echo
-  echo - https://ostechnix.com/enable-parallel-downloading-in-pacman-in-arch-linux/
-  echo - https://lists.archlinux.org/pipermail/pacman-dev/2021-May/025133.html
-  echo
-  echo "Considering whether to remove all powerpill dependencies"
-  echo "from this script and the system"
-  echo "or to keep it as a fallback solution..."
-  echo
-  echo "I'll test pacman's parallel downloads and then I decide."
-  echo
-  echo "---------------------------------------------------------------"
+number_of_implicitly_installed_dependencies="$(wc -l "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies.log" | cut --delimiter=' ' --fields=1)"
 
-  sudo powerpill \
-      --sync \
-      --refresh --refresh \
-      --sysupgrade \
-      --needed \
-      --verbose \
-      --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-      --powerpill-config "$POWERPILL_CUSTOM_CONFIG"
+if [ $number_of_implicitly_installed_dependencies -ge 1 ]
+then
+  sudo pacman --remove --nosave --recursive --noconfirm $(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies.log")
+fi
 
-  echo
-  echo "============================================================="
-  echo "Updating and upgrading AUR packages"
-  echo "and official packages that had been downgraded by 'powerpill'"
-  echo "-------------------------------------------------------------"
-  echo 
 
-  pikaur \
-      --sync \
-      --refresh --refresh \
-      --sysupgrade \
-      --verbose \
-      --noedit \
-      --nodiff \
-      --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-      --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
-      --overwrite /usr/lib/p11-kit-trust.so \
-      --overwrite /usr/bin/fwupdate \
-      --overwrite /usr/share/man/man1/fwupdate.1.gz
 
+# Install back optionally required orphaned packages
 
+grep 'optionally requires' "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log" | tr -d ':' | sed 's/^\s*//g' | cut --delimiter=' ' --fields=4 > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies-still_required_as_optional_dependencies_for_other_packages.log"
 
+pikaur --sync --refresh --refresh --needed --noedit --nodiff --noconfirm $(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies-still_required_as_optional_dependencies_for_other_packages.log")
 
 
 
 
 
 
+# Step 2: Remove explicitly installed orphaned packages
 
+# Save pacman output for uninstallation of all orphaned packages, even the explicitly (manually) installed
 
+#REMOVE OPTIONS (APPLY TO -R)
+#...
+#-s, --recursive
+#    ... if you want to omit condition (B), pass this option twice.
 
-  echo
-  echo "=================="
-  echo "Removing leftovers"
-  echo "=================="
+yes n | sudo pacman --remove --nosave --recursive --recursive $(sudo pacman --query --deps --unrequired --quiet) > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-pacman_output.log" 2>/dev/null
 
-  rm -rf ~/.libvirt
-  sudo powerpill --powerpill-clean
 
-  # TODO execute orphans removal in the "Removing leftovers" section
 
-#main() {
-#  prepare_environment
-#  set_up_pacman_configuration 
-#  set_up_pikaur
-#  update_repo_of_this_script
-#  update_pacman_mirror_servers
-#  update_arch_linux_keyring
-#  remount_boot_partition_as_writable
-#  install_script_dependencies
-#  check_script_syntax
-#  upgrade_packages
-#  clean_up
-#}
 
-#main
+
+
+# Save all orphaned packages that were explicitly (manually) installed
+
+head -n -2 "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-pacman_output.log" | tail -n +5 | tr --squeeze-repeats '[:space:]' | cut --delimiter=' ' --fields=1 > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages_explicitly_installed.log"
+
+
+
+
+
+
+
+# Uninstall all orphaned packages that were installed explicitly (manually), as a dependency for other packages
+
+number_of_explicitly_installed_dependencies="$(wc -l "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages_explicitly_installed.log" | cut --delimiter=' ' --fields=1)"
+
+if [ $number_of_explicitly_installed_dependencies -ge 1 ]
+then
+  sudo pacman --remove --nosave --recursive --noconfirm $(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages_explicitly_installed.log")
+fi
+
+
+
+
+
+
+
+
+
+# Install back optionally required explicitly installed orphaned packages
+
+grep 'optionally requires' "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-pacman_output.log" | tr -d ':' | sed 's/^\s*//g' | cut --delimiter=' ' --fields=4 > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log"
+
+number_of_explicitly_installed_optional_dependencies="$(wc -l "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log" | cut --delimiter=' ' --fields=1)"
+
+if [ $number_of_explicitly_installed_optional_dependencies -ge 1 ]
+then
+  pikaur --sync --refresh --refresh --needed --noedit --nodiff --noconfirm $(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log")
+fi
+
+
+
+
+
+
+# Editing Chromium shortcut in order to disable (the annoying) gnome-keyring password prompt
+
+"${REPO_DIR}/utils/chromium_disable_gnome-keyring_password_prompt.sh"
+
+
+
+
+
+
+
+
+log_line_number_begin="$(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-pacman_log-starting_line_for_this_update_session.log")"
+PACMAN_LOG_FILE="$(pacman --verbose 2--config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "Log File" | rev | cut --delimiter=' ' --fields=1 | rev)"
+log_line_number_end="$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)"
+update_log_lines=$(( log_line_number_end - log_line_number_begin ))
+tail -n "$update_log_lines" "${PACMAN_LOG_FILE}" | less
+
+
+
+
+
+
+
+
+ln -sf "${REPO_DIR}/update_arch.sh" "${HOME}/update_arch.sh"
+ln -sf "${REPO_DIR}/update_all_installed_ignored_packages.sh" "${HOME}/update_all_installed_ignored_packages.sh"
+ln -sf "${REPO_DIR}/utils/remount_boot_part_as_writable.sh" "${HOME}/remount_boot_part_as_writable.sh"
 

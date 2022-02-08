@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 set -x
 
 REPO_DIR="$(dirname "$(readlink --canonicalize "$0")")"
