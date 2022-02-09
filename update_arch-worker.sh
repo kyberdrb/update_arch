@@ -105,7 +105,8 @@ fi
 
 
 
-# Copy embedded gpg configuration file to the system
+# Backup current gpg configuration for pacman and
+# copy embedded gpg configuration file to the system
 
 PACMAN_GPG_DIR="$(pacman --verbose --config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "GPG Dir" | rev | cut --delimiter=' ' --fields=1 | rev)"
 
