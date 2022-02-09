@@ -237,7 +237,6 @@ pikaur \
       --config "$PACMAN_CUSTOM_CONFIG" \
       --pikaur-config "$PIKAUR_CUSTOM_CONFIG" \
     pikaur reflector rsync shellcheck
-}
 
 
 
