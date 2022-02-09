@@ -190,15 +190,40 @@ https://unix.stackexchange.com/questions/437179/why-cant-an-input-file-be-an-out
 
 https://duckduckgo.com/?q=cat+input+file+is+output+file&ia=web&iax=qa
 
+Use -print0/-0 or find -exec + to allow for non-alphanumeric filenames.: https://github.com/koalaman/shellcheck/wiki/SC2038
+
+https://duckduckgo.com/?q=bash+script+hangs+stuck&ia=web
+
+https://duckduckgo.com/?q=pikaur+disable+color&ia=web
+
+https://duckduckgo.com/?q=disable+termial+formatting&ia=web
+
+https://www.reddit.com/r/linuxquestions/comments/5mmsiz/disable_bash_terminal_output_formatting_bold/
+
+---
+
+Expect - Automation tool
+
+https://cmdref.net/programming/expect/index.html
+
+https://stackoverflow.com/questions/55680003/enter-sudo-password-while-in-expect-script
+
+
+
 ---
 
 https://wiki.archlinux.org/index.php/Unofficial_user_repositories/Repo-ck#Add_Repo
 
 https://lonewolf.pedrohlc.com/chaotic-aur/
 
+https://ostechnix.com/enable-parallel-downloading-in-pacman-in-arch-linux/
+
+https://lists.archlinux.org/pipermail/pacman-dev/2021-May/025133.html
+
 https://wiki.archlinux.org/index.php/System_maintenance
 
 https://duckduckgo.com/?q=pacman+6+pacman.conf&ia=web
 
 https://wiki.archlinux.org/title/Pacman/Package_signing#Initializing_the_keyring `/etc/pacman.d/gnupg/`
+
 

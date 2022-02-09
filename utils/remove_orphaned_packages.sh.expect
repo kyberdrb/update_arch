@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+
+#spawn pikaur -Syyu
+#expect ">>"
+#send "n\r"
+
+spawn sudo pacman -Syyu
+expect "Proceed with installation?"
+send "n\r"
