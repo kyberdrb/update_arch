@@ -382,6 +382,15 @@ rm -rf ~/.libvirt
 
 
 
+# Remove orphaned packages
+# Continue with files "vim -p utils/remove_orphaned_packages.sh utils/remove_orphaned_packages.sh.expect update_arch.sh update_arch-worker.sh"
+
+"${REPO_DIR}/utils/remove_orphaned_packages.sh"
+
+
+
+
+
 
 log_line_number_begin="$(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-pacman_log-starting_line_for_this_update_session.log")"
 log_line_number_end="$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)"
