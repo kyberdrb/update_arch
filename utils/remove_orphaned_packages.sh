@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# TODO move to separate script to 'utils' dir
-
 # Remove orphaned packages
 
 # Step 1: Remove implicitly installed orphaned packages
