@@ -275,7 +275,8 @@ sudo rm -rf "$PACMAN_DB_PATH"/sync/*
 
 # Updating official packages
 
-sudo exo-open --launch TerminalEmulator --geometry=240x24 --display :0.0 --show-menubar --show-borders --hide-toolbar --command="pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm" 2>&1 &
+terminal_emulator="$(pacman -Qq | grep terminal)"
+"${terminal_emulator}" --geometry=240x24 --command="pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm" 2>&1 &
 
 
 
