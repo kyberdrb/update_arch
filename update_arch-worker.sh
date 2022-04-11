@@ -5,6 +5,8 @@ set -x
 
 sudo printf "\r"
 
+CUSTOM_LOG_FILE_FOR_UPDATE="${1}"
+
 PACMAN_DEFAULT_CONFIG_FILE="/etc/pacman.conf"
 REPO_DIR="$(dirname "$(readlink --canonicalize "$0")")"
 BACKUP_DIR="${REPO_DIR}/backup"
@@ -276,7 +278,7 @@ sudo rm -rf "$PACMAN_DB_PATH"/sync/*
 # Updating official packages
 
 terminal_emulator="$(pacman -Qq | grep terminal)"
-sudo "${terminal_emulator}" --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm && sleep 10" 2>&1
+sudo "${terminal_emulator}" --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm && sleep 10" 1>"${CUSTOM_LOG_FILE_FOR_UPDATE}" 2>&1
 
 
 
@@ -311,7 +313,7 @@ done
 #   uncomment it after execution
 #   and maybe make an alias for pacman (which uncomments the line before running) and pikaur (which comments out the line before running)
 
-sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz && sleep 10" 2>&1
+sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz && sleep 10" 1>"${CUSTOM_LOG_FILE_FOR_UPDATE}" 2>&1
 
 
 
