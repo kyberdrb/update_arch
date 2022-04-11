@@ -276,7 +276,7 @@ sudo rm -rf "$PACMAN_DB_PATH"/sync/*
 # Updating official packages
 
 terminal_emulator="$(pacman -Qq | grep terminal)"
-sudo "${terminal_emulator}" --geometry=240x24 --command="pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm" 2>&1 &
+sudo "${terminal_emulator}" --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm" 2>&1 &
 
 
 
