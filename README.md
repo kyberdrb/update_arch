@@ -204,11 +204,11 @@ https://www.reddit.com/r/linuxquestions/comments/5mmsiz/disable_bash_terminal_ou
 
 Expect - Automation tool
 
+https://gtfobins.github.io/gtfobins/expect/
+
 https://cmdref.net/programming/expect/index.html
 
 https://stackoverflow.com/questions/55680003/enter-sudo-password-while-in-expect-script
-
-
 
 ---
 
