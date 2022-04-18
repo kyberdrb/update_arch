@@ -20,7 +20,7 @@ Log out or reboot, then log back in, open terminal and use the alias `archupdate
 
 ## Preventing a kernel panic
 
-Kernel panic is a situation when the system doesn't boot after some modification, i.e. upgrading the kernel, installing a conflicting module etc.
+Kernel panic is a situation when the system doesn't boot after some modification, i.e. **after upgrading the kernel**, installing a conflicting module etc.
 
 To prevent this, some packages are present in the `pacman.conf` in the `IgnorePkg` attribute to ensure more stable and robust system between upgrades.
 
@@ -200,9 +200,13 @@ https://duckduckgo.com/?q=disable+termial+formatting&ia=web
 
 https://www.reddit.com/r/linuxquestions/comments/5mmsiz/disable_bash_terminal_output_formatting_bold/
 
+https://www.minitool.com/news/open-file-explorer-from-cmd.html
+
 ---
 
 Expect - Automation tool
+
+https://archlinux.org/packages/extra/x86_64/expect/
 
 https://gtfobins.github.io/gtfobins/expect/
 
@@ -211,6 +215,8 @@ https://cmdref.net/programming/expect/index.html
 https://stackoverflow.com/questions/55680003/enter-sudo-password-while-in-expect-script
 
 ---
+
+AUR repositories and `pacman`
 
 https://wiki.archlinux.org/index.php/Unofficial_user_repositories/Repo-ck#Add_Repo
 
