@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 remount_boot_partition_as_writable() {
   # for upgrading the linux kernel, firmware, video drivers 
   # and other stuff requiring mkinitcpio regenerationn

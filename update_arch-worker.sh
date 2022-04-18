@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+#set -e
 set -x
 
 sudo printf "\r"
@@ -268,119 +268,28 @@ pikaur \
 # Clear pacman databases
 
 PACMAN_DB_PATH="$(pacman --verbose --config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "DB Path" | rev | cut --delimiter=' ' --fields=1 | rev)"
-sudo rm -rf "$PACMAN_DB_PATH"/sync/*
+sudo rm -rf "${PACMAN_DB_PATH}sync/*"
 
 
 
 
-
-
-# Updating official packages
 
 terminal_emulator="$(pacman -Qq | grep terminal)"
-sudo "${terminal_emulator}" --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm && sleep 10" 1>"${CUSTOM_LOG_FILE_FOR_UPDATE}" 2>&1
 
-
-
-
-
-
-# wait for the lock
-while [ ! -f "/var/lib/pacman/db.lck" ]
-do
-  sleep 1
-done
-
-while [ -f "/var/lib/pacman/db.lck" ]
-do
-  # wait for the drop of the lock to proceed
-  if [ ! -f "/var/lib/pacman/db.lck" ]
-  then
-    break
-  fi
-
-  sleep 1
-done
-
-
-
-
-
+# Updating official packages
+sudo "${terminal_emulator}" --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
 
 # Updating unofficial - AUR - packages
-
-# TODO comment out 'ParallelDownloads' in '/etc/pacman.conf' to fix the untidy and unelegant output for DB syncing in pikaur
-#   uncomment it after execution
-#   and maybe make an alias for pacman (which uncomments the line before running) and pikaur (which comments out the line before running)
-
-sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz && sleep 10" 1>"${CUSTOM_LOG_FILE_FOR_UPDATE}" 2>&1
-
-
-
-
-
-# wait for the lock
-while [ ! -f "/var/lib/pacman/db.lck" ]
-do
-  sleep 1
-done
-
-while [ -f "/var/lib/pacman/db.lck" ]
-do
-  # wait for the drop of the lock to proceed
-  if [ ! -f "/var/lib/pacman/db.lck" ]
-  then
-    break
-  fi
-
-  sleep 1
-done
-
-
-
-
-
-
-
-# Wait for the pikaur window to close after done synchronizing databases and dropping the lock
-
-sleep 5
-
-
-
-
-
-
+sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
 
 # Removing leftovers
-
 rm -rf ~/.libvirt
 
-
-
-
-
-
-
 # Editing Chromium shortcut in order to disable (the annoying) gnome-keyring password prompt
-
 "${REPO_DIR}/utils/chromium_disable_gnome-keyring_password_prompt.sh"
 
-
-
-
-
-
-
 # Remove orphaned packages
-# Continue with files "vim -p utils/remove_orphaned_packages.sh utils/remove_orphaned_packages.sh.expect update_arch.sh update_arch-worker.sh"
-
-#sudo "${REPO_DIR}/utils/remove_orphaned_packages.sh" "${CUSTOM_LOG_FILE_FOR_UPDATE}"
-
-
-
-
-
+sudo "${REPO_DIR}/utils/remove_orphaned_packages.sh" "${CUSTOM_LOG_FILE_FOR_UPDATE}"
 
 log_line_number_begin="$(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-pacman_log-starting_line_for_this_update_session.log")"
 log_line_number_end="$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)"

@@ -204,6 +204,10 @@ https://www.reddit.com/r/linuxquestions/comments/5mmsiz/disable_bash_terminal_ou
 
 https://unix.stackexchange.com/questions/393162/gpg-edit-key-fails-with-no-secret-key-even-though-list-secret-keys-and-s
 
+https://duckduckgo.com/?q=terminal+redirect+stderr&ia=web
+
+The redirection order matters: https://askubuntu.com/questions/625224/how-to-redirect-stderr-to-a-file#625230
+
 ---
 
 Expect - Automation tool

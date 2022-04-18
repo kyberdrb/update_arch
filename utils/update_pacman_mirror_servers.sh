@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 update_pacman_mirror_servers() {
   echo "================================"
   echo "Searching for fastest mirrors..."
@@ -22,7 +24,8 @@ update_pacman_mirror_servers() {
 
   # ===================================================================================
 
-  # The hard way `_´ that always works ºOº &) :D :)
+  # The hard way `_´ that always works and is fastah, better, strongur ºOº &) :D :)
+  #  Because doing things by hand is always 'better' and 'more efficient' right? Right?? No? Ok, maybe not... :/ :D
   curl -L "https://www.archlinux.org/mirrors/status/" -o ~/Arch_Linux-Mirrors-Status.html
 
   echo
