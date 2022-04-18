@@ -208,6 +208,12 @@ https://duckduckgo.com/?q=terminal+redirect+stderr&ia=web
 
 The redirection order matters: https://askubuntu.com/questions/625224/how-to-redirect-stderr-to-a-file#625230
 
+https://duckduckgo.com/?q=pacman+redirect+tee&ia=web&iax=qa
+
+https://unix.stackexchange.com/questions/271314/archlinuxes-pacman-tee-unclear-console-io#271324
+
+https://steinbaugh.com/posts/posix.html#conditional-expressions
+
 ---
 
 Expect - Automation tool
