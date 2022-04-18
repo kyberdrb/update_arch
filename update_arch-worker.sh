@@ -375,7 +375,7 @@ rm -rf ~/.libvirt
 # Remove orphaned packages
 # Continue with files "vim -p utils/remove_orphaned_packages.sh utils/remove_orphaned_packages.sh.expect update_arch.sh update_arch-worker.sh"
 
-#sudo "${REPO_DIR}/utils/remove_orphaned_packages.sh"
+#sudo "${REPO_DIR}/utils/remove_orphaned_packages.sh" "${CUSTOM_LOG_FILE_FOR_UPDATE}"
 
 
 

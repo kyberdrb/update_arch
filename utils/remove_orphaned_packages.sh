@@ -1,5 +1,7 @@
 #!/bin/sh
 
+CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION="${1%.*}"
+
 # Remove orphaned packages
 
 # Step 1: Remove implicitly installed orphaned packages
@@ -14,28 +16,14 @@
 if [ -z "$(sudo pacman --query --deps --unrequired --quiet)" ]
 then
 
-  #sudo ./remove_orphaned_packages.sh.expect > /tmp/expect_output.log
+  yes n | sudo pacman --remove --nosave --recursive $(sudo pacman --query --deps --unrequired --quiet) 1> "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log" 2>/dev/null
 
-  # FOR PACMAN
-  #tail --lines=-$(grep --line-number "Package" /tmp/expect_output.log | cut --delimiter=':' --fields=1) /tmp/expect_output.log | tail --lines=+3 | head --lines=-5 | tr --squeeze-repeats '[:space:]' | cut --delimiter=' ' --fields=1 | cut --delimiter='/' --fields=2
-
-  # FOR PIKAUR
-  #tail -n -$(grep --line-number "Repository packages will be installed" /tmp/expect_output.log | cut --delimiter=':' --fields=1) /tmp/expect_output.log | head -n -3 | tr --squeeze-repeats '[:space:]' | sed 's/^\s*//g' | cut --delimiter=' ' --fields=1 | strings | sed 's/\[0;1m//g'  | less
-
-  yes n | sudo pacman --remove --nosave --recursive $(sudo pacman --query --deps --unrequired --quiet) 2>/dev/null 1> "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log"
-
-
-
-
-
+  # ===
 
   # Save all orphaned packages that were installed implicitly (automatically), as a dependency for other packages
-
   sudo pacman --query --deps --unrequired --quiet > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies.log"
 
-
-
-
+  # ===
 
   # Uninstall all orphaned packages that were installed implicitly (automatically), as a dependency for other packages
 
@@ -46,7 +34,7 @@ then
     sudo pacman --remove --nosave --recursive --noconfirm $(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies.log")
   fi
 
-
+  # ===
 
   # Install back optionally required orphaned packages
 
@@ -55,9 +43,9 @@ then
   pikaur --sync --refresh --refresh --needed --noedit --nodiff --noconfirm $(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-implicitly_installed_as_dependencies-still_required_as_optional_dependencies_for_other_packages.log")
 
 
-
-
-
+  # ===
+  # ===
+  # ===
 
   # Step 2: Remove explicitly installed orphaned packages
 
@@ -70,20 +58,13 @@ then
 
   yes n | sudo pacman --remove --nosave --recursive --recursive $(sudo pacman --query --deps --unrequired --quiet) > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-pacman_output.log" 2>/dev/null
 
-
-
-
-
+  # ===
 
   # Save all orphaned packages that were explicitly (manually) installed
 
   head -n -2 "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages-explicitly_installed-pacman_output.log" | tail -n +5 | tr --squeeze-repeats '[:space:]' | cut --delimiter=' ' --fields=1 > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages_explicitly_installed.log"
 
-
-
-
-
-
+  # ===
 
   # Uninstall all orphaned packages that were installed explicitly (manually), as a dependency for other packages
 
@@ -94,13 +75,7 @@ then
     sudo pacman --remove --nosave --recursive --noconfirm $(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-orphaned_packages_explicitly_installed.log")
   fi
 
-
-
-
-
-
-
-
+  # ===
 
   # Install back optionally required explicitly installed orphaned packages
 
