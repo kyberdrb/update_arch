@@ -19,27 +19,12 @@ CUSTOM_CONFIG_DIR="${REPO_DIR}/config"
 PACMAN_CUSTOM_CONFIG="${CUSTOM_CONFIG_DIR}/pacman.conf"
 sudo cp --force "${PACMAN_CUSTOM_CONFIG}" "$PACMAN_DEFAULT_CONFIG_FILE"
 
-
-
-
-
-
-
-
 PIKAUR_CUSTOM_CONFIG="${CUSTOM_CONFIG_DIR}/pikaur.conf"
 mv "${HOME}/.config/pikaur.conf" "${BACKUP_DIR}/pikaur.conf-${BACKUP_TIME_AND_DATE}.bak"
 cp --force "$PIKAUR_CUSTOM_CONFIG" "${HOME}/.config/pikaur.conf"
 
 PACMAN_LOG_FILE="$(pacman --verbose 2>/dev/null | grep "Log File" | rev | cut --delimiter=' ' --fields=1 | rev)"
 wc -l "${PACMAN_LOG_FILE}" | cut -d' ' -f1 > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-pacman_log-starting_line_for_this_update_session.log"
-
-
-
-
-
-
-
-
 
 # Set up pikaur
 
@@ -63,14 +48,6 @@ if [[ -z $PIKAUR_INSTALLED ]]; then
   rm -rf /tmp/pikaur-git
 fi
 
-
-
-
-
-
-
-
-
 # Download latest version of update script
 
 #git_pull_status=$(git -C "${REPO_DIR}" pull)
@@ -83,29 +60,10 @@ fi
 #  exit
 #fi
 
-
-
-
-
-
-
-
-
 # Download fresh list of mirror servers
 "${REPO_DIR}"/utils/update_pacman_mirror_servers.sh
 
-
-
-
-
-
-
-
-
 # Update Arch Linux keyring to avoid PGP signature interactive prompts or errors
-
-
-
 
 # Backup current gpg configuration for pacman and
 # copy embedded gpg configuration file to the system
@@ -116,9 +74,6 @@ if [ -f "${PACMAN_GPG_DIR}gpg.conf" ]
 then
   sudo mv "${PACMAN_GPG_DIR}gpg.conf" "${BACKUP_DIR}/gpg.conf-${BACKUP_TIME_AND_DATE}.bak"
 fi
-
-
-
 
 # Cleanup GPG keys
 #  see https://bbs.archlinux.org/viewtopic.php?pid=1837082#p1837082"
@@ -135,18 +90,10 @@ if [ -d "${HOME}/.gnupg/" ]; then
   rm --recursive "${HOME}/.gnupg/"
 fi
 
-
-
-
 # Initialize pacman keyring
-
 sudo pacman-key --init
 
-
-
-
 # Backup default generated gpg.conf and copy custom gpg.conf
-
 
 if [ -f "${PACMAN_GPG_DIR}gpg.conf" ]
 then
@@ -155,10 +102,6 @@ fi
 
 GPG_CUSTOM_CONFIG="${CUSTOM_CONFIG_DIR}/gpg.conf"
 sudo cp --force "${GPG_CUSTOM_CONFIG}" "${PACMAN_GPG_DIR}gpg.conf"
-
-
-
-
 
 # Add GPG keys for custom repositories and AUR packages
 
@@ -219,29 +162,17 @@ pikaur \
 
 # Update chaotic-keyring which adds GPG keys for chaotic-aur repo
 # For chaotic-aur repo setup, see https://lonewolf.pedrohlc.com/chaotic-aur/
-
 pikaur \
     --sync \
     --refresh \
     --verbose \
     --noconfirm \
-  chaotic-keyring reflector rsync shellcheck exo
-
-
-
+  chaotic-keyring
 
 # Remounting boot partition as writable in order to make the upgrade of kernel and other kernel dependend modules possible
-
 "${REPO_DIR}"/utils/remount_boot_part_as_writable.sh
 
-
-
-
-
-
-
 # Installing/Upgrading script dependencies
-
 pikaur \
     --sync \
     --refresh \
@@ -249,30 +180,12 @@ pikaur \
     --needed \
   pikaur
 
-
-pikaur \
-    --sync \
-    --refresh \
-    --noconfirm \
-    --needed \
-  expect
-
-
-
-
-
-
-
 # Updating and upgrading packages
 
 # Clear pacman databases
 
 PACMAN_DB_PATH="$(pacman --verbose --config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "DB Path" | rev | cut --delimiter=' ' --fields=1 | rev)"
 sudo rm -rf "${PACMAN_DB_PATH}sync/*"
-
-
-
-
 
 terminal_emulator="$(pacman -Qq | grep terminal)"
 
@@ -296,13 +209,6 @@ log_line_number_end="$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)"
 update_log_lines=$(( log_line_number_end - log_line_number_begin ))
 
 printf "%s\n" "tac "${PACMAN_LOG_FILE}" | head --lines "${update_log_lines}" | less"
-
-
-
-
-
-
-
 
 ln -sf "${REPO_DIR}/update_arch.sh" "${HOME}/update_arch.sh"
 ln -sf "${REPO_DIR}/update_all_installed_ignored_packages.sh" "${HOME}/update_all_installed_ignored_packages.sh"

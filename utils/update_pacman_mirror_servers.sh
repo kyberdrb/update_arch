@@ -14,6 +14,14 @@ update_pacman_mirror_servers() {
   echo
 
   # The easy way ^_^ that sometimes fails
+  #pikaur \
+  #    --sync \
+  #    --refresh \
+  #    --verbose \
+  #    --noconfirm \
+  #    --needed
+  #  reflector
+  #
   # reflector --fastest 200 --sort rate --completion-percent 100 --verbose --country Slovakia,Czechia,Poland,Hungary,Ukraine,Austria,Germany | tee ~/reflector_mirrorlist
   # local number_of_lines_reflector_mirrorlist
   # number_of_lines_reflector_mirrorlist=$(wc -l ~/reflector_mirrorlist | cut -d' ' -f1)
