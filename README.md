@@ -244,4 +244,12 @@ https://duckduckgo.com/?q=pacman+6+pacman.conf&ia=web
 
 https://wiki.archlinux.org/title/Pacman/Package_signing#Initializing_the_keyring `/etc/pacman.d/gnupg/`
 
+---
 
+git
+
+https://duckduckgo.com/?q=add+tag+to+commit&ia=web
+
+https://www.tutorialspoint.com/how-to-tag-a-commit-in-git
+
+https://stackoverflow.com/questions/29830544/how-do-i-add-a-tag-to-a-github-commit
