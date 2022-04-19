@@ -201,6 +201,12 @@ rm -rf ~/.libvirt
 # Editing Chromium shortcut in order to disable (the annoying) gnome-keyring password prompt
 "${REPO_DIR}/utils/chromium_disable_gnome-keyring_password_prompt.sh"
 
+# Restore HDMI audio delay fix in pulseaudio default configuration
+# Fix for audio delay from HDMI output when I start playing audio
+#   play audio immediately from HDMI output after starting playback of audio or video
+#   see `pulseaudio` package https://github.com/kyberdrb/installed_packages_linux/blob/master/README.md
+sudo sed --in-place 's/^load-module module-suspend-on-idle/#load-module module-suspend-on-idle/g' "/etc/pulse/default.pa"
+
 # Remove orphaned packages
 sudo "${REPO_DIR}/utils/remove_orphaned_packages.sh" "${CUSTOM_LOG_FILE_FOR_UPDATE}"
 
