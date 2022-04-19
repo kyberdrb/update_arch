@@ -21,16 +21,18 @@ then
   yes n | sudo pacman --remove --nosave --recursive $(sudo pacman --query --deps --unrequired --quiet) 1>"${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log" 2>/dev/null
 
   # For debugging purposes
-  #less "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log"
-  #read -r
+  echo
+  cat "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log"
+  read -r
   # ===
 
   # Save all orphaned packages that were installed implicitly (automatically), as a dependency for other packages
   sudo pacman --query --deps --unrequired --quiet > "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies.log"
 
   # For debugging purposes
-  #less "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies.log"
-  #read -r
+  echo
+  cat "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies.log"
+  read -r
   # ===
 
   # Uninstall all orphaned packages that were installed implicitly (automatically), as a dependency for other packages
@@ -49,8 +51,9 @@ then
   grep 'optionally requires' "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log" | tr -d ':' | sed 's/^\s*//g' | cut --delimiter=' ' --fields=4 > "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-still_required_as_optional_dependencies_for_other_packages.log"
 
   # For debugging purposes
-  #less "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-still_required_as_optional_dependencies_for_other_packages.log"
-  #read -r
+  echo
+  cat "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-still_required_as_optional_dependencies_for_other_packages.log"
+  read -r
 
   pikaur --sync --refresh --refresh --needed --noedit --nodiff --noconfirm $(cat "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-still_required_as_optional_dependencies_for_other_packages.log")
 
@@ -70,8 +73,9 @@ then
   yes n | sudo pacman --remove --nosave --recursive --recursive $(sudo pacman --query --deps --unrequired --quiet) > "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-pacman_output.log" 2>/dev/null
 
   # For debugging purposes
-  #less "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-pacman_output.log"
-  #read -r
+  echo
+  cat "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-pacman_output.log"
+  read -r
   # ===
 
   # Save all orphaned packages that were explicitly (manually) installed
@@ -79,8 +83,9 @@ then
   head -n -2 "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-pacman_output.log" | tail -n +5 | tr --squeeze-repeats '[:space:]' | cut --delimiter=' ' --fields=1 > "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages_explicitly_installed.log"
 
   # For debugging purposes
-  #less "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages_explicitly_installed.log"
-  #read -r
+  echo
+  cat "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages_explicitly_installed.log"
+  read -r
   # ===
 
   # Uninstall all orphaned packages that were installed explicitly (manually), as a dependency for other packages
@@ -101,8 +106,9 @@ then
   number_of_explicitly_installed_optional_dependencies="$(wc -l "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log" | cut --delimiter=' ' --fields=1)"
 
   # For debugging purposes
-  #less "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log"
-  #read -r
+  echo
+  cat "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log"
+  read -r
 
   if [ $number_of_explicitly_installed_optional_dependencies -ge 1 ]
   then
