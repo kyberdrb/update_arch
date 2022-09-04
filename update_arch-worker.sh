@@ -29,7 +29,8 @@ wc -l "${PACMAN_LOG_FILE}" | cut -d' ' -f1 > "${CUSTOM_LOG_DIR}/update_arch-${BA
 # Set up pikaur
 
 PIKAUR_INSTALLED=$(pacman --query | grep pikaur)
-if [[ -z $PIKAUR_INSTALLED ]]; then 
+if [ -z "${PIKAUR_INSTALLED}" ]
+then 
   rm -rf /tmp/pikaur-git
   mkdir /tmp/pikaur-git
   curl https://aur.archlinux.org/cgit/aur.git/snapshot/pikaur-git.tar.gz --output /tmp/pikaur-git.tar.gz
@@ -159,6 +160,15 @@ pikaur \
     --verbose \
     --noconfirm \
   chaotic-mirrorlist
+
+# TODO - TEST THIS CONDITION: Switch to new chaotic-mirrorlist file, when available
+#  to make sure the package database from chaotic servers will be downloaded entirely
+
+if [ -e "/etc/pacman.d/chaotic-mirrorlist.pacnew" ]
+then
+    sudo mv "/etc/pacman.d/chaotic-mirrorlist" "/etc/pacman.d/chaotic-mirrorlist-${BACKUP_TIME_AND_DATE}.bak"
+    sudo mv "/etc/pacman.d/chaotic-mirrorlist.pacnew" chaotic-mirrorlist
+fi
 
 # Update chaotic-keyring which adds GPG keys for chaotic-aur repo
 # For chaotic-aur repo setup, see https://lonewolf.pedrohlc.com/chaotic-aur/
