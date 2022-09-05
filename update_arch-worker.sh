@@ -31,22 +31,13 @@ wc -l "${PACMAN_LOG_FILE}" | cut -d' ' -f1 > "${CUSTOM_LOG_DIR}/update_arch-${BA
 PIKAUR_INSTALLED=$(pacman --query | grep pikaur)
 if [ -z "${PIKAUR_INSTALLED}" ]
 then 
-  rm -rf /tmp/pikaur-git
-  mkdir /tmp/pikaur-git
-  curl https://aur.archlinux.org/cgit/aur.git/snapshot/pikaur-git.tar.gz --output /tmp/pikaur-git.tar.gz
-  tar -xvzf /tmp/pikaur-git.tar.gz --directory /tmp/pikaur-git
-  cd /tmp/pikaur-git/pikaur-git || exit
-  makepkg --ignorearch --clean --syncdeps --noconfirm
-  PIKAUR_PACKAGE_NAME=$(ls -- *.tar*)
-
-  sudo pacman \
-      --verbose \
-      --upgrade \
-      --noconfirm \
-      --config "$PACMAN_CUSTOM_CONFIG" \
-    "$PIKAUR_PACKAGE_NAME"
-  
-  rm -rf /tmp/pikaur-git
+  temporary_pikaur_dir_path="/tmp/pikaur/"
+  rm -rf "${temporary_pikaur_dir_path}"
+  git clone https://aur.archlinux.org/pikaur.git "${temporary_pikaur_dir_path}"
+  cd "${temporary_pikaur_dir_path}"
+  makepkg --ignorearch --clean --syncdeps --install --noconfirm
+  rm -rf "${temporary_pikaur_dir_path}"
+  cd "${REPO_DIR}"
 fi
 
 # Download latest version of update script
@@ -196,6 +187,8 @@ pikaur \
 
 PACMAN_DB_PATH="$(pacman --verbose --config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "DB Path" | rev | cut --delimiter=' ' --fields=1 | rev)"
 sudo rm -rf "${PACMAN_DB_PATH}sync/*"
+
+#TODO #2: allow script to be used in terminal only - without any GUI, window manager or graphical server
 
 terminal_emulator="$(pacman -Qq | grep terminal)"
 
