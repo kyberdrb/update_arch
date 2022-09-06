@@ -199,8 +199,8 @@ if [ -z "${DISPLAY}" ]
 then
   sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm
 else
-  terminal_emulator="$(pacman -Qq | grep terminal)"
-  sudo ${terminal_emulator} --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
+  TERMINAL_EMULATOR="$(pacman -Qq | grep terminal)"
+  sudo ${TERMINAL_EMULATOR} --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
 fi
 
 # Update unofficial - AUR - packages
@@ -209,7 +209,7 @@ if [ -z "${DISPLAY}" ]
 then
   pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz
 else
-  sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
+  sudo "${TERMINAL_EMULATOR}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
 fi
 
 # Removing leftovers
