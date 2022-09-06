@@ -134,9 +134,9 @@ gpg2 --recv-keys BE793007AD22DF7E
 # Uprade keyrings and additional mirrorlists for repositories
 
 pikaur \
-  --sync \
-  --refresh --refresh \
-  --verbose \
+    --sync \
+    --refresh --refresh \
+    --verbose \
 
 pikaur \
     --sync \
@@ -188,15 +188,29 @@ pikaur \
 PACMAN_DB_PATH="$(pacman --verbose --config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "DB Path" | rev | cut --delimiter=' ' --fields=1 | rev)"
 sudo rm -rf "${PACMAN_DB_PATH}sync/*"
 
-#TODO #2: allow script to be used in terminal only - without any GUI, window manager or graphical server
+# Update official packages
 
-terminal_emulator="$(pacman -Qq | grep terminal)"
+# I know there is a more elegant solution here
+#     https://www.shellcheck.net/wiki/SC2089 - Quotes/backslashes will be treated literally. Use an array.
+#   but I'll stick with the 'if/else' solution for now for simplicity:
+#   less layers of abstraction and direct command execution - immediately readable and, hopefully, understandable
 
-# Updating official packages
-sudo "${terminal_emulator}" --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
+if [ -z "${DISPLAY}" ]
+then
+  sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm
+else
+  terminal_emulator="$(pacman -Qq | grep terminal)"
+  sudo ${terminal_emulator} --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
+fi
 
-# Updating unofficial - AUR - packages
-sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
+# Update unofficial - AUR - packages
+
+if [ -z "${DISPLAY}" ]
+then
+  pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz
+else
+  sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
+fi
 
 # Removing leftovers
 rm -rf ~/.libvirt

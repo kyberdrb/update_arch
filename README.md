@@ -103,153 +103,117 @@ The solution is to downgrade the kernel version to the latest working version. A
 
     Sometimes the system boots, sometimes it doesn't. Be prepared to boot from the Arch Linux installation USB drive multiple times and try out different kernel versions and types to attain a bootable, usable and stable system again.
 
+## Sources
+
+Kernel panic
+
+- Kernel parameters: https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt
 - https://archlinux.org/pacman/pacman.conf.5.html#_options
 - https://wiki.archlinux.org/index.php/System_maintenance
 - https://github.com/kyberdrb/arch_linux_installation_guide/blob/master/README.md
 - https://www.unixmen.com/solve-arch-linux-kernel-panic/
 
-## Sources:
+---
 
-Kernel parameters: https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.txt
+Shell scripting
 
-Shell script syntax checker: https://www.shellcheck.net/
+- Shell script syntax checker: https://www.shellcheck.net/
+- https://www.archlinux.org/mirrors/status/
+- https://linuxize.com/post/how-to-read-a-file-line-by-line-in-bash/
+- https://stackoverflow.com/questions/14093452/grep-only-the-first-match-and-stop/14093511#14093511
+- https://stackoverflow.com/questions/1403087/how-can-i-convert-an-html-table-to-csv/10189130#10189130
+- https://stackoverflow.com/questions/1403087/how-can-i-convert-an-html-table-to-csv/10189130#10189130
+- https://kifarunix.com/delete-lines-matching-a-specific-pattern-in-a-file-using-sed/
+- https://www.2daygeek.com/remove-delete-empty-lines-in-a-file-in-linux/
+- https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed/1252010#1252010
+- https://phoenixnap.com/kb/grep-multiple-strings
+- https://wiki.archlinux.org/index.php/Powerpill#Troubleshooting
+- https://bbs.archlinux.org/viewtopic.php?pid=1254940#p1254940
+- https://xyne.archlinux.ca/projects/powerpill/
+- [pikaur - configuration file from custom path](https://github.com/actionless/pikaur/blob/5f2d8a7535e429c2387de23d65e6c47b1f463e56/pikaur/config.py#L48)
+- https://wiki.archlinux.org/title/Pacman#Hooks
+- https://man.archlinux.org/man/alpm-hooks.5
+- https://donatoroque.wordpress.com/2017/08/10/creating-pacman-hook-for-cleaning-cache/
+- https://duckduckgo.com/?q=run+pacman+hook+as+last&ia=web
+- https://duckduckgo.com/?q=pacman+hookdir&ia=web
+- https://duckduckgo.com/?q=bash+script+directory+posix&ia=web
+- https://stackoverflow.com/questions/29832037/how-to-get-script-directory-in-posix-sh
+- https://duckduckgo.com/?q=double+dash+bash&ia=web
+- https://unix.stackexchange.com/questions/11376/what-does-double-dash-mean#11382
+- https://duckduckgo.com/?q=bash+error+assigning+variable+command+not+found&ia=web
+- https://www.howtogeek.com/439736/how-to-create-aliases-and-shell-functions-on-linux/
+- https://stackoverflow.com/questions/4088357/how-can-i-override-alias-set-in-bash-aliases
+- https://stackoverflow.com/questions/7961581/is-there-a-vim-command-to-relocate-a-tab
+- https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Removing_unused_packages_(orphans)
+- https://duckduckgo.com/?q=script+echo+into+ineractive+bash&ia=web
+- https://duckduckgo.com/?q=Pass+input+to+interactive+command+line+program+in+bash&ia=web
+- https://www.baeldung.com/linux/bash-interactive-prompts
+- https://duckduckgo.com/?q=linux+terminal+head+except+last+line&ia=web
+- https://duckduckgo.com/?q=sed+substitute+double+quotes&ia=web
+- https://unix.stackexchange.com/questions/666084/how-to-use-sed-to-replace-a-string-in-double-quotes-with-a-variable/666093#666093
+- https://duckduckgo.com/?q=exo+open+terminalemulator+command&ia=web
+- Passing arguments to `exo-open TerminalEmulator` - https://ubuntuforums.org/showthread.php?t=2428462
+- https://www.educba.com/bash-export-variable/
+- https://unix.stackexchange.com/questions/437179/why-cant-an-input-file-be-an-output-file#437181
+- https://duckduckgo.com/?q=cat+input+file+is+output+file&ia=web&iax=qa
+- Use -print0/-0 or find -exec + to allow for non-alphanumeric filenames.: https://github.com/koalaman/shellcheck/wiki/SC2038
+- https://duckduckgo.com/?q=bash+script+hangs+stuck&ia=web
+- https://duckduckgo.com/?q=pikaur+disable+color&ia=web
+- https://duckduckgo.com/?q=disable+termial+formatting&ia=web
+- https://www.reddit.com/r/linuxquestions/comments/5mmsiz/disable_bash_terminal_output_formatting_bold/
+- [SOLVED] pacman: "unable to lock database" - https://bbs.archlinux.org/viewtopic.php?id=149042
+- https://unix.stackexchange.com/questions/393162/gpg-edit-key-fails-with-no-secret-key-even-though-list-secret-keys-and-s
+- https://duckduckgo.com/?q=terminal+redirect+stderr&ia=web
+- The redirection order matters: https://askubuntu.com/questions/625224/how-to-redirect-stderr-to-a-file#625230
+- https://duckduckgo.com/?q=pacman+redirect+tee&ia=web&iax=qa
+- https://unix.stackexchange.com/questions/271314/archlinuxes-pacman-tee-unclear-console-io#271324
+- https://steinbaugh.com/posts/posix.html#conditional-expressions
+- https://duckduckgo.com/?q=bash+execute+command+in+variable&ia=web
+- https://linuxhint.com/execute_command_in_variable/
+- https://www.shellcheck.net/wiki/SC2089 - Quotes/backslashes will be treated literally. Use an array.
 
-https://www.archlinux.org/mirrors/status/
+---
 
-https://linuxize.com/post/how-to-read-a-file-line-by-line-in-bash/
+`makepkg`
 
-https://stackoverflow.com/questions/14093452/grep-only-the-first-match-and-stop/14093511#14093511
-
-https://stackoverflow.com/questions/1403087/how-can-i-convert-an-html-table-to-csv/10189130#10189130
-
-https://stackoverflow.com/questions/1403087/how-can-i-convert-an-html-table-to-csv/10189130#10189130
-
-https://kifarunix.com/delete-lines-matching-a-specific-pattern-in-a-file-using-sed/
-
-https://www.2daygeek.com/remove-delete-empty-lines-in-a-file-in-linux/
-
-https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed/1252010#1252010
-
-https://phoenixnap.com/kb/grep-multiple-strings
-
-https://wiki.archlinux.org/index.php/Powerpill#Troubleshooting
-
-https://bbs.archlinux.org/viewtopic.php?pid=1254940#p1254940
-
-https://xyne.archlinux.ca/projects/powerpill/
-
-[pikaur - configuration file from custom path](https://github.com/actionless/pikaur/blob/5f2d8a7535e429c2387de23d65e6c47b1f463e56/pikaur/config.py#L48)
-
-https://wiki.archlinux.org/title/Pacman#Hooks
-
-https://man.archlinux.org/man/alpm-hooks.5
-
-https://donatoroque.wordpress.com/2017/08/10/creating-pacman-hook-for-cleaning-cache/
-
-https://duckduckgo.com/?q=run+pacman+hook+as+last&ia=web
-
-https://duckduckgo.com/?q=pacman+hookdir&ia=web
-
-https://duckduckgo.com/?q=bash+script+directory+posix&ia=web
-
-https://stackoverflow.com/questions/29832037/how-to-get-script-directory-in-posix-sh
-
-https://duckduckgo.com/?q=double+dash+bash&ia=web
-
-https://unix.stackexchange.com/questions/11376/what-does-double-dash-mean#11382
-
-https://duckduckgo.com/?q=bash+error+assigning+variable+command+not+found&ia=web
-
-https://www.howtogeek.com/439736/how-to-create-aliases-and-shell-functions-on-linux/
-
-https://stackoverflow.com/questions/4088357/how-can-i-override-alias-set-in-bash-aliases
-
-https://stackoverflow.com/questions/7961581/is-there-a-vim-command-to-relocate-a-tab
-
-https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Removing_unused_packages_(orphans)
-
-https://duckduckgo.com/?q=script+echo+into+ineractive+bash&ia=web
-
-https://duckduckgo.com/?q=Pass+input+to+interactive+command+line+program+in+bash&ia=web
-
-https://www.baeldung.com/linux/bash-interactive-prompts
-
-https://duckduckgo.com/?q=linux+terminal+head+except+last+line&ia=web
-
-https://duckduckgo.com/?q=sed+substitute+double+quotes&ia=web
-
-https://unix.stackexchange.com/questions/666084/how-to-use-sed-to-replace-a-string-in-double-quotes-with-a-variable/666093#666093
-
-https://duckduckgo.com/?q=exo+open+terminalemulator+command&ia=web
-
-Passing arguments to `exo-open TerminalEmulator` - https://ubuntuforums.org/showthread.php?t=2428462
-
-https://www.educba.com/bash-export-variable/
-
-https://unix.stackexchange.com/questions/437179/why-cant-an-input-file-be-an-output-file#437181
-
-https://duckduckgo.com/?q=cat+input+file+is+output+file&ia=web&iax=qa
-
-Use -print0/-0 or find -exec + to allow for non-alphanumeric filenames.: https://github.com/koalaman/shellcheck/wiki/SC2038
-
-https://duckduckgo.com/?q=bash+script+hangs+stuck&ia=web
-
-https://duckduckgo.com/?q=pikaur+disable+color&ia=web
-
-https://duckduckgo.com/?q=disable+termial+formatting&ia=web
-
-https://www.reddit.com/r/linuxquestions/comments/5mmsiz/disable_bash_terminal_output_formatting_bold/
-
-[SOLVED] pacman: "unable to lock database" - https://bbs.archlinux.org/viewtopic.php?id=149042
-
-https://unix.stackexchange.com/questions/393162/gpg-edit-key-fails-with-no-secret-key-even-though-list-secret-keys-and-s
-
-https://duckduckgo.com/?q=terminal+redirect+stderr&ia=web
-
-The redirection order matters: https://askubuntu.com/questions/625224/how-to-redirect-stderr-to-a-file#625230
-
-https://duckduckgo.com/?q=pacman+redirect+tee&ia=web&iax=qa
-
-https://unix.stackexchange.com/questions/271314/archlinuxes-pacman-tee-unclear-console-io#271324
-
-https://steinbaugh.com/posts/posix.html#conditional-expressions
+- https://duckduckgo.com/?t=ffab&q=pacman+install+from+pkgbuild&ia=web
+- https://raspberrypi.stackexchange.com/questions/510/how-do-i-install-packages-from-the-aur
+- https://raspberrypi.stackexchange.com/questions/510/how-do-i-install-packages-from-the-aur/511#511
+- https://duckduckgo.com/?t=ffab&q=makepkg+arch+example&ia=web
+- https://wiki.archlinux.org/title/Makepkg
+- https://duckduckgo.com/?t=ffab&q=arch+wiki+building+packages&ia=web
+- https://wiki.archlinux.org/title/Creating_packages
+- https://wiki.archlinux.org/title/Arch_Build_System
+- https://duckduckgo.com/?q=arch+makepkg+external+directory&ia=web
 
 ---
 
 Expect - Automation tool
 
-https://archlinux.org/packages/extra/x86_64/expect/
-
-https://gtfobins.github.io/gtfobins/expect/
-
-https://cmdref.net/programming/expect/index.html
-
-https://stackoverflow.com/questions/55680003/enter-sudo-password-while-in-expect-script
+- https://archlinux.org/packages/extra/x86_64/expect/
+- https://gtfobins.github.io/gtfobins/expect/
+- https://cmdref.net/programming/expect/index.html
+- https://stackoverflow.com/questions/55680003/enter-sudo-password-while-in-expect-script
 
 ---
 
 AUR repositories and `pacman`
 
-https://wiki.archlinux.org/index.php/Unofficial_user_repositories/Repo-ck#Add_Repo
-
-https://lonewolf.pedrohlc.com/chaotic-aur/
-
-https://ostechnix.com/enable-parallel-downloading-in-pacman-in-arch-linux/
-
-https://lists.archlinux.org/pipermail/pacman-dev/2021-May/025133.html
-
-https://wiki.archlinux.org/index.php/System_maintenance
-
-https://duckduckgo.com/?q=pacman+6+pacman.conf&ia=web
-
-https://wiki.archlinux.org/title/Pacman/Package_signing#Initializing_the_keyring `/etc/pacman.d/gnupg/`
+- https://wiki.archlinux.org/index.php/Unofficial_user_repositories/Repo-ck#Add_Repo
+- https://lonewolf.pedrohlc.com/chaotic-aur/
+- https://ostechnix.com/enable-parallel-downloading-in-pacman-in-arch-linux/
+- https://lists.archlinux.org/pipermail/pacman-dev/2021-May/025133.html
+- https://wiki.archlinux.org/index.php/System_maintenance
+- https://duckduckgo.com/?q=pacman+6+pacman.conf&ia=web
+- https://wiki.archlinux.org/title/Pacman/Package_signing#Initializing_the_keyring `/etc/pacman.d/gnupg/`
+- https://aur.archlinux.org/packages/pikaur
+- https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=pikaur
 
 ---
 
 git
 
-https://duckduckgo.com/?q=add+tag+to+commit&ia=web
+- https://duckduckgo.com/?q=add+tag+to+commit&ia=web
+- https://www.tutorialspoint.com/how-to-tag-a-commit-in-git
+- https://stackoverflow.com/questions/29830544/how-do-i-add-a-tag-to-a-github-commit
 
-https://www.tutorialspoint.com/how-to-tag-a-commit-in-git
-
-https://stackoverflow.com/questions/29830544/how-do-i-add-a-tag-to-a-github-commit
