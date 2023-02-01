@@ -18,8 +18,8 @@ then
 else
   terminal_emulator="$(pacman -Qq | grep terminal)"
 
-  sudo "${terminal_emulator}" --geometry=240x24 --command="pacman --sync --refresh --refresh --needed --verbose --noconfirm ${locally_installed_ignored_packages_for_upgrade}" 2>&1
+  sudo "${terminal_emulator}" --geometry=189x24 --command="pacman --sync --refresh --refresh --needed --verbose --noconfirm ${locally_installed_ignored_packages_for_upgrade}" 2>&1
 
-  sudo "${terminal_emulator}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --needed --verbose --noedit --nodiff --noconfirm ${locally_installed_ignored_packages_for_upgrade}" 2>&1
+  sudo "${terminal_emulator}" --geometry=189x24 --command="pikaur --sync --refresh --refresh --needed --verbose --noedit --nodiff --noconfirm ${locally_installed_ignored_packages_for_upgrade}" 2>&1
 fi
 

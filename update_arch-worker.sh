@@ -31,10 +31,11 @@ wc -l "${PACMAN_LOG_FILE}" | cut -d' ' -f1 > "${CUSTOM_LOG_DIR}/update_arch-${BA
 PIKAUR_INSTALLED=$(pacman --query | grep pikaur)
 if [ -z "${PIKAUR_INSTALLED}" ]
 then 
-  temporary_pikaur_dir_path="/tmp/pikaur/"
+  temporary_pikaur_dir_path="/tmp/pikaur-git/"
   rm -rf "${temporary_pikaur_dir_path}"
-  git clone https://aur.archlinux.org/pikaur.git "${temporary_pikaur_dir_path}"
+  git clone https://aur.archlinux.org/pikaur-git.git "${temporary_pikaur_dir_path}"
   cd "${temporary_pikaur_dir_path}"
+  mv *.zst "${HOME}/.cache/pikaur/pkg/"
   makepkg --ignorearch --clean --syncdeps --install --noconfirm
   rm -rf "${temporary_pikaur_dir_path}"
   cd "${REPO_DIR}"
@@ -200,7 +201,7 @@ then
   sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm
 else
   TERMINAL_EMULATOR="$(pacman -Qq | grep terminal)"
-  sudo ${TERMINAL_EMULATOR} --geometry=240x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
+  sudo ${TERMINAL_EMULATOR} --geometry=189x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
 fi
 
 # Update unofficial - AUR - packages
@@ -209,7 +210,7 @@ if [ -z "${DISPLAY}" ]
 then
   pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz
 else
-  sudo "${TERMINAL_EMULATOR}" --geometry=240x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
+  sudo "${TERMINAL_EMULATOR}" --geometry=189x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
 fi
 
 # Removing leftovers
