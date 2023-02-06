@@ -28,6 +28,9 @@ wc -l "${PACMAN_LOG_FILE}" | cut -d' ' -f1 > "${CUSTOM_LOG_DIR}/update_arch-${BA
 
 # Set up pikaur
 
+# TODO below piece of code is also encapsulated in 'utils/update_eID_klient.sh'
+#  compare, abstract, extract and centralize duplicate code?
+
 PIKAUR_INSTALLED=$(pacman --query | grep pikaur)
 if [ -z "${PIKAUR_INSTALLED}" ]
 then 
@@ -35,23 +38,32 @@ then
   rm -rf "${temporary_pikaur_dir_path}"
   git clone https://aur.archlinux.org/pikaur-git.git "${temporary_pikaur_dir_path}"
   cd "${temporary_pikaur_dir_path}"
-  mv *.zst "${HOME}/.cache/pikaur/pkg/"
   makepkg --ignorearch --clean --syncdeps --install --noconfirm
+  pacman_cache_dir="$(pacman --verbose 2>/dev/null | grep "Cache Dirs" | cut --delimiter=':' --fields=2 | sed 's/^\s*//g' | tr --squeeze-repeats ' ' | cut --delimiter=' ' --fields=1)"
+  find "${temporary_pikaur_dir_path}" -mindepth 1 -maxdepth 1 -type f -name "*.zst" -exec sudo mv --verbose "{}" "${pacman_cache_dir}" \;
   rm -rf "${temporary_pikaur_dir_path}"
   cd "${REPO_DIR}"
 fi
 
 # Download latest version of update script
 
-#git_pull_status=$(git -C "${REPO_DIR}" pull)
+# disable exitting on failure, i.e. non-zero return code
+set +e
 
-#echo "$git_pull_status" | grep --invert-match "Already up to date."
+git_pull_status=$(git -C "${REPO_DIR}" pull)
 
-#if [[ $? -eq 0 ]]; then
-#  printf "%s\n" "Repository updated, or some merge problem occured."
-#  printf "%s\n" "Check that and then please, launch the script again."
-#  exit
-#fi
+echo "$git_pull_status" | grep --invert-match "Already up to date."
+
+if [[ $? -eq 0 ]]; then
+  printf "%s\n" "Repository updated, or some merge problem occured."
+  printf "%s\n" "Check that and then please, launch the script again."
+  exit
+fi
+
+# enable exitting on failure again?
+set -e
+
+exit
 
 # Download fresh list of mirror servers
 "${REPO_DIR}"/utils/update_pacman_mirror_servers.sh
