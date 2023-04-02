@@ -63,8 +63,6 @@ fi
 # enable exitting on failure again?
 set -e
 
-exit
-
 # Download fresh list of mirror servers
 "${REPO_DIR}"/utils/update_pacman_mirror_servers.sh
 
