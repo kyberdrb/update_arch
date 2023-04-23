@@ -56,7 +56,7 @@ echo "$git_pull_status" | grep --invert-match "Already up to date."
 
 if [[ $? -eq 0 ]]; then
   printf "%s\n" "Repository updated, or some merge problem occured."
-  printf "%s\n" "Check that and then please, launch the script again."
+  printf "%s\n" "Check it, fix it, and launch the script again."
   exit
 fi
 

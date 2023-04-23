@@ -4,7 +4,7 @@ set -x
 
 sudo echo -e "\r"
 
-array=( $(grep --line-number "Exec" /usr/share/applications/chromium.desktop | grep --invert-match "\-\-password\-store=basic" | cut -d':' -f1) )
+array=( $(grep --line-number "Exec" /usr/share/applications/chromium.desktop | grep --invert-match -- "--password-store=basic" | cut -d':' -f1) )
 
 for exec_line_number in "${array[@]}"
 do
