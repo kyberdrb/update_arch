@@ -99,6 +99,13 @@ update_pacman_mirror_servers() {
 
   sed -i 's/$/\$repo\/os\/\$arch/g' ~/mirrorlist
 
+  echo "============================="
+  echo "Remove mirror servers"
+  echo "-----------------------------"
+  echo
+
+  sed --in-place '/mirror/d' ~/mirrorlist
+
   echo "=========================================="
   echo "Printing a piece of the final 'mirrorlist'"
   echo "------------------------------------------"

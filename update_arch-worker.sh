@@ -26,6 +26,10 @@ cp --force "$PIKAUR_CUSTOM_CONFIG" "${HOME}/.config/pikaur.conf"
 PACMAN_LOG_FILE="$(pacman --verbose 2>/dev/null | grep "Log File" | rev | cut --delimiter=' ' --fields=1 | rev)"
 wc -l "${PACMAN_LOG_FILE}" | cut -d' ' -f1 > "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-pacman_log-starting_line_for_this_update_session.log"
 
+# Remove DB lock to prevent hiccups
+DB_LOCK_FILE="$(pacman --verbose 2>/dev/null | grep "Lock File" | rev | cut --delimiter=' ' --fields=1 | rev)"
+sudo rm --force "${DB_LOCK_FILE}"
+
 # Set up pikaur
 
 # TODO below piece of code is also encapsulated in 'utils/update_eID_klient.sh'
