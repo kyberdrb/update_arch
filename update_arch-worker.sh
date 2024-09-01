@@ -32,6 +32,13 @@ sudo rm --force "${DB_LOCK_FILE}"
 
 # Set up pikaur
 
+# Install 'debugedit' package to prevent errors when installing AUR packages:
+#  :: Starting the build:
+#  ==> ERROR: Cannot find the debugedit binary required for including source files in debug packages.
+#  Command 'sudo --user=#1000 -- makepkg --force' failed to execute.
+
+sudo pacman --sync --refresh --needed debugedit
+
 # TODO below piece of code is also encapsulated in 'utils/update_eID_klient.sh'
 #  compare, abstract, extract and centralize duplicate code?
 
@@ -113,7 +120,7 @@ sudo cp --force "${GPG_CUSTOM_CONFIG}" "${PACMAN_GPG_DIR}gpg.conf"
 # Add GPG keys for custom repositories and AUR packages
 
 sudo pacman-key --populate archlinux
-sudo gpg --refresh-keys
+sudo gpg --refresh-keys --allow-weak-key-signatures
 
 # Add GPG key for seblu repository
 # Type: unofficial repo
@@ -141,9 +148,9 @@ sudo pacman-key --lsign-key 3056513887B78AEB
 # Add GPG key for Pedram Pourang - tsujan - required when building compton-conf AUR package - see https://aur.archlinux.org/packages/compton-conf/#pinned-742136
 # Type: AUR repo
 # Error code: 2 - gpg: no default secret key: No secret key Key not changed so no update needed.
-gpg --recv-keys BE793007AD22DF7E
-gpg2 --recv-keys BE793007AD22DF7E
-#gpg --lsign-key BE793007AD22DF7E
+gpg --recv-keys --allow-weak-key-signatures BE793007AD22DF7E
+gpg2 --recv-keys --allow-weak-key-signatures BE793007AD22DF7E
+#gpg --lsign-key --allow-weak-key-signatures BE793007AD22DF7E
 
 
 # Uprade keyrings and additional mirrorlists for repositories
@@ -177,7 +184,7 @@ then
 fi
 
 # Update chaotic-keyring which adds GPG keys for chaotic-aur repo
-# For chaotic-aur repo setup, see https://lonewolf.pedrohlc.com/chaotic-aur/
+#  For chaotic-aur repo setup, see https://lonewolf.pedrohlc.com/chaotic-aur/
 pikaur \
     --sync \
     --refresh \
