@@ -180,7 +180,7 @@ pikaur \
 if [ -e "/etc/pacman.d/chaotic-mirrorlist.pacnew" ]
 then
     sudo mv "/etc/pacman.d/chaotic-mirrorlist" "/etc/pacman.d/chaotic-mirrorlist-${BACKUP_TIME_AND_DATE}.bak"
-    sudo mv "/etc/pacman.d/chaotic-mirrorlist.pacnew" chaotic-mirrorlist
+    sudo cp "/etc/pacman.d/chaotic-mirrorlist.pacnew" "/etc/pacman.d/chaotic-mirrorlist"
 fi
 
 # Update chaotic-keyring which adds GPG keys for chaotic-aur repo
@@ -217,6 +217,11 @@ sudo rm -rf "${PACMAN_DB_PATH}sync/*"
 #   but I'll stick with the 'if/else' solution for now for simplicity:
 #   less layers of abstraction and direct command execution - immediately readable and, hopefully, understandable
 
+echo "Upgrade commands:"
+echo "sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
+echo "pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
+
+# TODO add 'kitty' support: detect wayland session & wayland default terminal
 if [ -z "${DISPLAY}" ]
 then
   sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm
@@ -227,6 +232,7 @@ fi
 
 # Update unofficial - AUR - packages
 
+# TODO add 'kitty' support: detect wayland session & wayland default terminal
 if [ -z "${DISPLAY}" ]
 then
   pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz
