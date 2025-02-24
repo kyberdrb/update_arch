@@ -210,6 +210,9 @@ pikaur \
 PACMAN_DB_PATH="$(pacman --verbose --config "${PACMAN_CUSTOM_CONFIG}" 2>/dev/null | grep "DB Path" | rev | cut --delimiter=' ' --fields=1 | rev)"
 sudo rm -rf "${PACMAN_DB_PATH}sync/*"
 
+# Remove orphaned packages
+sudo "${REPO_DIR}/utils/remove_orphaned_packages.sh" "${CUSTOM_LOG_FILE_FOR_UPDATE}"
+
 # Update official packages
 
 # I know there is a more elegant solution here
@@ -251,9 +254,6 @@ rm -rf ~/.libvirt
 #   play audio immediately from HDMI output after starting playback of audio or video
 #   see `pulseaudio` package https://github.com/kyberdrb/installed_packages_linux/blob/master/README.md
 sudo sed --in-place 's/^load-module module-suspend-on-idle/#load-module module-suspend-on-idle/g' "/etc/pulse/default.pa"
-
-# Remove orphaned packages
-sudo "${REPO_DIR}/utils/remove_orphaned_packages.sh" "${CUSTOM_LOG_FILE_FOR_UPDATE}"
 
 log_line_number_begin="$(cat "${CUSTOM_LOG_DIR}/update_arch-${BACKUP_TIME_AND_DATE}-pacman_log-starting_line_for_this_update_session.log")"
 log_line_number_end="$(wc -l "$PACMAN_LOG_FILE" | cut -d' ' -f1)"
