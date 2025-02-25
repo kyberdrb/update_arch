@@ -14,9 +14,17 @@ But when GPG keys change, or something goes terribly wrong, manual intervention 
 
 Add this to the `.bashrc` file
 
-        alias archupdate='/home/laptop/git/kyberdrb/update_arch/update_arch.sh'
+    alias archupdate='/home/laptop/git/kyberdrb/update_arch/update_arch.sh'
 
-Log out or reboot, then log back in, open terminal and use the alias `archupdate` or `archu` + `Tab` `;)` anywhere in the shell to run the update procedure.
+Log out or reboot, then log back in, open terminal and use the alias `archupdate` or `archu` + `Tab` anywhere in the shell to run the update procedure.
+
+## Remove orphaned packages manually
+
+It's possible to remove orphaned packages by running related helper script (requires `sudo`)
+
+    ./git/kyberdrb/update_arch/utils/remove_orphaned_packages.sh "/home/laptop/git/kyberdrb/update_arch/logs/update_arch-$(date "+%Y_%m_%d-%H_%M_%S").log"
+
+Similarily, any shell script in the `utils` directory can be run in a standalone fashion.
 
 ## Preventing a kernel panic
 
