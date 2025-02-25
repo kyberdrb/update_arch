@@ -224,23 +224,30 @@ echo "Upgrade commands:"
 echo "sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
 echo "pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
 
-# TODO add 'kitty' support: detect wayland session & wayland default terminal
-if [ -z "${DISPLAY}" ]
+bash_pid=$$
+ps -o comm= -p $bash_pid
+script_pid=$(ps -o ppid= -p $bash_pid)
+ps -o comm= -p $script_pid
+script_bash_pid=$(ps -o ppid= -p $script_pid)
+ps -o comm= -p $script_bash_pid
+another_pid=$(ps -o ppid= -p $script_bash_pid)
+ps -o comm= -p $another_pid
+TERMINAL_EMULATOR=$(ps -o comm= -p $another_pid)
+
+if [ "${XDG_SESSION_TYPE}" = "x11" ]
 then
-  sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm
-else
-  TERMINAL_EMULATOR="$(pacman -Qq | grep terminal)"
   sudo ${TERMINAL_EMULATOR} --geometry=189x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
+else
+  sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm
 fi
 
 # Update unofficial - AUR - packages
 
-# TODO add 'kitty' support: detect wayland session & wayland default terminal
-if [ -z "${DISPLAY}" ]
+if [ "${XDG_SESSION_TYPE}" = "x11" ]
 then
-  pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz
-else
   sudo "${TERMINAL_EMULATOR}" --geometry=189x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
+else
+  pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz
 fi
 
 # Removing leftovers
