@@ -1,6 +1,6 @@
 # Arch Linux Updater
 
-**Always do a backup or clone before upgrading the system. When something breaks or fails, you will have something to rely on.**
+**Always do a backup or clone before upgrading the system. When something breaks or fails, you will have something to rely on and to restore from.**
 
 Update script for fully automatizing the updating of an Arch Linux.
 
