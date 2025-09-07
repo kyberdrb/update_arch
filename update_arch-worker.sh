@@ -37,7 +37,7 @@ sudo rm --force "${DB_LOCK_FILE}"
 #  ==> ERROR: Cannot find the debugedit binary required for including source files in debug packages.
 #  Command 'sudo --user=#1000 -- makepkg --force' failed to execute.
 
-sudo pacman --sync --refresh --needed debugedit
+sudo pacman --sync --refresh --needed --noconfirm debugedit
 
 # TODO below piece of code is also encapsulated in 'utils/update_eID_klient.sh'
 #  compare, abstract, extract and centralize duplicate code?
@@ -201,7 +201,7 @@ pikaur \
     --refresh \
     --noconfirm \
     --needed \
-  pikaur
+  pikaur-git
 
 # Updating and upgrading packages
 
