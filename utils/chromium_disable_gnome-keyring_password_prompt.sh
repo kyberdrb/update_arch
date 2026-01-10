@@ -8,7 +8,7 @@ array=( $(grep --line-number "Exec" /usr/share/applications/chromium.desktop | g
 
 for exec_line_number in "${array[@]}"
 do
-  sudo sed --in-place "${exec_line_number}s/$/ --password-store=basic/" /usr/share/applications/chromium.desktop
+  sudo sed --in-place "${exec_line_number}s/$/ --password-store=basic --disable-features=ExtensionManifestV2Unsupported/" /usr/share/applications/chromium.desktop
 done
 
 # https://unix.stackexchange.com/questions/70878/replacing-string-based-on-line-number/70879#70879
