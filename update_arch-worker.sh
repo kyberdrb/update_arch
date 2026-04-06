@@ -61,42 +61,7 @@ echo "Upgrade commands:"
 echo "sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
 echo "pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
 
-#bash_pid=$$
-#ps -o comm= -p $bash_pid
-#script_pid=$(ps -o ppid= -p $bash_pid)
-#ps -o comm= -p $script_pid
-#script_bash_pid=$(ps -o ppid= -p $script_pid)
-#ps -o comm= -p $script_bash_pid
-#another_pid=$(ps -o ppid= -p $script_bash_pid)
-#ps -o comm= -p $another_pid
-#TERMINAL_EMULATOR=$(ps -o comm= -p $another_pid)
-
-#echo "$$"
-#PARENT_TERMINAL_PID=$(ps -o ppid= -p "$$" | tr -d ' ')
-#echo "${PARENT_TERMINAL_PID}"
-#TERMINAL_BINARY_NAME="$(ps -p "${PARENT_TERMINAL_PID}" -o comm=)"
-#echo "${TERMINAL_BINARY_NAME}"
-#TERMINAL_EMULATOR=$(readlink -f /proc/${TERMINAL_BINARY_NAME}/exe)
-#echo "${TEMRINAL_EMULATOR}"
-
-#exit
-# UNREACHABLE CODE
-
-#if [ "${XDG_SESSION_TYPE}" = "x11" ]
-#then
-#  sudo ${TERMINAL_EMULATOR} --geometry=189x24 --command="sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm"
-#else
-#  sudo pacman --sync --refresh --refresh --sysupgrade --needed --verbose --noconfirm
-#fi
-
 # Update unofficial - AUR - packages
-
-#if [ "${XDG_SESSION_TYPE}" = "x11" ]
-#then
-#  sudo "${TERMINAL_EMULATOR}" --geometry=189x24 --command="pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
-#else
-#  pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz
-#fi
 
 echo "${KITTY_WINDOW_ID}"
 echo $(get_terminal_emulator)
@@ -108,15 +73,8 @@ run_in_terminal "pikaur --sync --refresh --refresh --sysupgrade --verbose --noed
 if [ "${UPDATE_ALL_IGNORED_PACKAGES}" == "--update-ignored" ] || \
    [ "${UPDATE_ALL_IGNORED_PACKAGES}" == "-i" ]
 then
-  #REPO_DIR="$(dirname "$(readlink --canonicalize "$0")")"
-  #"${REPO_DIR}/update_all_installed_ignored_packages.sh
-
   locally_installed_ignored_packages_for_upgrade="$(pacman --query --quiet $(cat "/etc/pacman.conf" | grep "IgnorePkg" | cut -d '=' -f2) 2>/dev/null | tr '\n' ' ')"
   
-  #run_in_terminal "pacman --sync --refresh --refresh --needed --verbose --noconfirm ${locally_installed_ignored_packages_for_upgrade}"
-
-  #run_in_terminal "pikaur --sync --refresh --refresh --needed --verbose --noedit --nodiff --noconfirm ${locally_installed_ignored_packages_for_upgrade}"
-
   # FOR DEBUGGING PURPOSES
   for ignored_package in ${locally_installed_ignored_packages_for_upgrade}
   do

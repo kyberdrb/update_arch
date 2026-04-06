@@ -10,13 +10,13 @@ CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION="${1%.*}"
 
 # Backup pacman output for uninstallation of all orphaned packages
 
-#-s, --recursive
-#    Remove each target specified including all of their dependencies, provided that (A) they are not required by
-#    other packages; and (B) they were not explicitly installed by the user. This operation is recursive and analogous
-#    to a backwards --sync operation, and it helps keep a clean system without orphans. ...
-
 if [ -n "$(sudo pacman --query --deps --unrequired --quiet)" ]
 then
+
+  #-s, --recursive
+  #    Remove each target specified including all of their dependencies, provided that (A) they are not required by
+  #    other packages; and (B) they were not explicitly installed by the user. This operation is recursive and analogous
+  #    to a backwards --sync operation, and it helps keep a clean system without orphans. ...
 
   yes n | sudo pacman --remove --nosave --recursive $(sudo pacman --query --deps --unrequired --quiet) 1>"${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-implicitly_installed_as_dependencies-pacman_output.log" 2>/dev/null
 
