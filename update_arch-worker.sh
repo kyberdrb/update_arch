@@ -24,15 +24,18 @@ run_in_terminal() {
     term_exe=$(get_terminal_emulator) || { echo "Cannot detect terminal emulator" >&2; return 1; }
     term_name=$(basename "$term_exe")
 
-    EXIT_FILE=$(mktemp)
+    EXIT_FILE=$(sudo mktemp)
+#    ls -l "${EXIT_FILE}"
+#    chmod a+w "${EXIT_FILE}"
+#    ls -l "${EXIT_FILE}"
 
     case "$term_name" in
         kitty)
             # -o overrides config: 'c' suffix means cells (columns/rows)
-            sudo -E "$term_exe" \
+            sudo -E "$term_exe" --hold \
                 -o initial_window_width=189c \
                 -o initial_window_height=24c \
-                sh -c "$cmd; echo \$? > ${EXIT_FILE}"
+                sh -c "$cmd; ls -l "${EXIT_FILE}"; echo \$? > ${EXIT_FILE}"
             return $?
             ;;
         xfce4-terminal)
@@ -45,9 +48,10 @@ run_in_terminal() {
             ;;
     esac
 
-    _ret=$(cat "${EXIT_FILE}" 2>/dev/null)
-    rm -f "${EXIT_FILE}"
-    return "${_ret:-1}"
+    #_ret=$(cat "${EXIT_FILE}" 2>/dev/null)
+    #echo "Internal return code [${ret}]"
+    #rm -f "${EXIT_FILE}"
+    #return "${_ret:-1}"
 }
 
 # Update official packages
@@ -81,13 +85,26 @@ then
     echo "${ignored_package}"
   done
 
+#  for ignored_package in ${locally_installed_ignored_packages_for_upgrade}
+#  do
+#    if ! run_in_terminal "pacman --sync --refresh --refresh --needed --verbose --noconfirm ${ignored_package}"
+#    then
+#      run_in_terminal "pikaur --sync --refresh --refresh --needed --verbose --noedit --nodiff --noconfirm ${ignored_package}"
+#    fi
+#  done
+
   for ignored_package in ${locally_installed_ignored_packages_for_upgrade}
   do
-    if run_in_terminal "pacman --sync --refresh --refresh --needed --verbose --noconfirm ${ignored_package}"
+    if pacman -Si "${ignored_package}" > /dev/null 2>&1
     then
+      run_in_terminal "pacman --sync --refresh --refresh --needed --verbose --noconfirm ${ignored_package}"
+    else
       run_in_terminal "pikaur --sync --refresh --refresh --needed --verbose --noedit --nodiff --noconfirm ${ignored_package}"
     fi
+
+    sudo rm --verbose -f "${EXIT_FILE}"
   done
+
 fi
 
 set +x
