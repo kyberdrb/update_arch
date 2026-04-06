@@ -112,6 +112,7 @@ then
 
   if [ $number_of_explicitly_installed_optional_dependencies -ge 1 ]
   then
-    pikaur --sync --refresh --refresh --needed --noedit --nodiff --noconfirm $(cat -- "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log")
+    pikaur --sync --refresh --refresh --needed --noedit --nodiff --noconfirm --user-id "${SUDO_UID:-$(id --user "$SUDO_USER")}" $(cat -- "${CUSTOM_LOG_FILE_FILENAME_WITHOUT_EXTENSION}-orphaned_packages-explicitly_installed-still_required_as_optional_dependencies_for_other_packages.log")
   fi
 fi
+
