@@ -4,13 +4,20 @@ set -x
 
 UPDATE_ALL_IGNORED_PACKAGES=$1
 
+# Traverse the tree of parent PIDs of subshels spawned by the terminal emulator
+#  until finding the actual terminal emulator binary
+#  Example:
+#    systemd (PID 1)
+#      └── kitty (PID 1080)        ← owns ptmx → FOUND, return /usr/bin/kitty
+#            └── shell (PID ~1081) ← subshell spawned by terminal emulator
+#                  └── your script (PID $$)  ← loop starts here in a nested subshell
 get_terminal_emulator() {
     pid=$$
     while [ "$pid" -gt 1 ]; do
         pid=$(cat /proc/$pid/stat | cut -d ' ' -f 4)
         exe=$(readlink -f /proc/$pid/exe 2>/dev/null) || continue
 
-        # A terminal emulator owns a pseudo-terminal master (ptmx)
+        # Only a terminal emulator owns a pseudo-terminal master (ptmx)
         if ls -la /proc/$pid/fd 2>/dev/null | grep -q ptmx; then
             echo "$exe"
             return 0
@@ -69,12 +76,12 @@ if [ "${UPDATE_ALL_IGNORED_PACKAGES}" == "--update-ignored" ] || \
    [ "${UPDATE_ALL_IGNORED_PACKAGES}" == "-i" ]
 then
   locally_installed_ignored_packages_for_upgrade="$(pacman --query --quiet $(cat "/etc/pacman.conf" | grep "IgnorePkg" | cut -d '=' -f2) 2>/dev/null | tr '\n' ' ')"
-  
+
   # FOR DEBUGGING PURPOSES
-  for ignored_package in ${locally_installed_ignored_packages_for_upgrade}
-  do
-    echo "${ignored_package}"
-  done
+#  for ignored_package in ${locally_installed_ignored_packages_for_upgrade}
+#  do
+#    echo "${ignored_package}"
+#  done
 
   for ignored_package in ${locally_installed_ignored_packages_for_upgrade}
   do
@@ -85,9 +92,10 @@ then
       run_in_terminal "pikaur --sync --refresh --refresh --needed --verbose --noedit --nodiff --noconfirm ${ignored_package}"
     fi
 
+    ls -l "${EXIT_FILE}"
     sudo rm --verbose -f "${EXIT_FILE}"
+    ls -l "${EXIT_FILE}"
   done
-
 fi
 
 set +x
