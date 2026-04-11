@@ -2,7 +2,7 @@
 
 set -x
 
-UPDATE_ALL_IGNORED_PACKAGES=$1
+SKIP_UPDATING_ALL_IGNORED_PACKAGES=$1
 
 # Traverse the tree of parent PIDs of subshels spawned by the terminal emulator
 #  until finding the actual terminal emulator binary
@@ -72,8 +72,8 @@ run_in_terminal "pacman --sync --refresh --refresh --sysupgrade --needed --verbo
 
 run_in_terminal "pikaur --sync --refresh --refresh --sysupgrade --verbose --noedit --nodiff --noconfirm --overwrite /usr/lib/p11-kit-trust.so --overwrite /usr/bin/fwupdate --overwrite /usr/share/man/man1/fwupdate.1.gz"
 
-if [ "${UPDATE_ALL_IGNORED_PACKAGES}" == "--update-ignored" ] || \
-   [ "${UPDATE_ALL_IGNORED_PACKAGES}" == "-i" ]
+if [ "${SKIP_UPDATING_ALL_IGNORED_PACKAGES}" != "--skip-ignored" ] || \
+   [ "${SKIP_UPDATING_ALL_IGNORED_PACKAGES}" != "-s" ]
 then
   locally_installed_ignored_packages_for_upgrade="$(pacman --query --quiet $(cat "/etc/pacman.conf" | grep "IgnorePkg" | cut -d '=' -f2) 2>/dev/null | tr '\n' ' ')"
 
